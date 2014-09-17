@@ -53,22 +53,15 @@ public class DocumentView extends javax.swing.JPanel {
 		return alias;
 	}
 
-	boolean WriteFile() {
+	public boolean DoSave(File fileToSave) {
 		String text = rSyntaxTextArea1.getText();
-		try {
-			FileWriter fileWriter;
-			fileWriter = new FileWriter(file);
-			fileWriter.write(text);
-			fileWriter.close();
+		if (FileHandler.WriteFile(fileToSave, text, this)) {
+			file = fileToSave;
 			modified = false;
 			textEditor.RefreshDocumentTab(this);
 			return true;
 		}
-		catch (IOException ex) {
-			Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
-			JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
-			return false;
-		}
+		return false;
 	}
 
 	public boolean SaveDoc() {
@@ -76,16 +69,14 @@ public class DocumentView extends javax.swing.JPanel {
 			return FileSaveAs();
 		}
 		else {
-			return WriteFile();
+			return DoSave(file);
 		}
 	}
 
 	public boolean FileSaveAs() {
 		File selectedFile = SelectFile();
 		if (selectedFile != null) {
-			file = selectedFile; // TODO if WriteFile fails, file should not be changed
-			textEditor.RefreshDocumentTab(this);
-			return WriteFile();
+			return DoSave(selectedFile);
 		}
 		return false;
 	}
