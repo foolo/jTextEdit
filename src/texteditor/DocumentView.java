@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -48,9 +45,14 @@ public class DocumentView extends javax.swing.JPanel {
 			alias = file.getName();
 		}
 		if (modified) {
-			alias = alias + "(Modified)";
+			alias = alias + " (*)";
 		}
 		return alias;
+	}
+
+	void KeyTyped() {
+		modified = true;
+		textEditor.RefreshDocumentTab(this);
 	}
 
 	public boolean DoSave(File fileToSave) {
@@ -103,7 +105,7 @@ public class DocumentView extends javax.swing.JPanel {
 		}
 	}
 
-	boolean HandleCurrentFile(String currentText) {
+	boolean HandleCurrentFile() {
 		if (!modified) {
 			return true;
 		}
@@ -141,6 +143,11 @@ public class DocumentView extends javax.swing.JPanel {
 
         rSyntaxTextArea1.setColumns(20);
         rSyntaxTextArea1.setRows(5);
+        rSyntaxTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                rSyntaxTextArea1KeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(rSyntaxTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -160,6 +167,10 @@ public class DocumentView extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void rSyntaxTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyTyped
+		KeyTyped();
+    }//GEN-LAST:event_rSyntaxTextArea1KeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

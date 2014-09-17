@@ -32,22 +32,44 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
 	}
 
-	public void SaveDocument() {
+	public boolean CloseDocument() {
+		DocumentView currentDocumentView = CurrentDocumentView();
+		if (currentDocumentView != null) {
+			if (currentDocumentView.HandleCurrentFile()) {
+				jTabbedPane1.remove(currentDocumentView);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	DocumentView CurrentDocumentView() {
 		Component c = jTabbedPane1.getSelectedComponent();
-		if (c instanceof DocumentView) {
-			((DocumentView) c).SaveDoc();
+		return ((DocumentView) c);
+	}
+
+	public void SaveDocument() {
+		DocumentView currentDocumentView = CurrentDocumentView();
+		if (currentDocumentView != null) {
+			currentDocumentView.SaveDoc();
 		}
 	}
 
 	public void SaveDocumentAs() {
-		Component c = jTabbedPane1.getSelectedComponent();
-		if (c instanceof DocumentView) {
-			((DocumentView) c).FileSaveAs();
+		DocumentView currentDocumentView = CurrentDocumentView();
+		if (currentDocumentView != null) {
+			currentDocumentView.FileSaveAs();
+
 		}
 	}
 
 	public void ExitProgram() {
-		//HandleExit();
+		while (jTabbedPane1.getTabCount() > 0) {
+			if (CloseDocument() == false) {
+				return;
+			}
+		};
+		dispose();
 	}
 
 	public void RefreshDocumentTab(DocumentView documentView) {
@@ -64,6 +86,7 @@ public final class TextEditor extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItemNew = new javax.swing.JMenuItem();
         jMenuItemOpen = new javax.swing.JMenuItem();
+        jMenuItemClose = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemSaveAs = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
@@ -89,6 +112,15 @@ public final class TextEditor extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItemOpen);
+
+        jMenuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemClose.setText("Close");
+        jMenuItemClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCloseActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItemClose);
 
         jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemSave.setText("Save");
@@ -159,6 +191,10 @@ public final class TextEditor extends javax.swing.JFrame {
 		ExitProgram();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
+    private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCloseActionPerformed
+		CloseDocument();
+    }//GEN-LAST:event_jMenuItemCloseActionPerformed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -202,6 +238,7 @@ public final class TextEditor extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemNew;
     private javax.swing.JMenuItem jMenuItemOpen;
