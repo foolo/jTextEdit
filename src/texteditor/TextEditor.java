@@ -37,6 +37,9 @@ public final class TextEditor extends javax.swing.JFrame {
 		if (currentDocumentView != null) {
 			if (currentDocumentView.HandleCurrentFile()) {
 				jTabbedPane1.remove(currentDocumentView);
+				if (jTabbedPane1.getTabCount() == 0) {
+					DoExit();
+				}
 				return true;
 			}
 		}
@@ -63,13 +66,24 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
 	}
 
-	public void ExitProgram() {
+	void CloseAllTabs() {
 		while (jTabbedPane1.getTabCount() > 0) {
 			if (CloseDocument() == false) {
 				return;
 			}
 		};
-		dispose();
+
+	}
+
+	void DoExit() {
+		if (jTabbedPane1.getTabCount() == 0) {
+			dispose();
+		};
+	}
+
+	void ExitApplication() {
+		CloseAllTabs();
+		DoExit();
 	}
 
 	public void RefreshDocumentTab(DocumentView documentView) {
@@ -91,7 +105,12 @@ public final class TextEditor extends javax.swing.JFrame {
         jMenuItemSaveAs = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -188,12 +207,16 @@ public final class TextEditor extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemSaveAsActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
-		ExitProgram();
+		ExitApplication();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
     private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCloseActionPerformed
 		CloseDocument();
     }//GEN-LAST:event_jMenuItemCloseActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+		ExitApplication();
+    }//GEN-LAST:event_formWindowClosing
 
 	/**
 	 * @param args the command line arguments
