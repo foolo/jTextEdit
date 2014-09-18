@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
 
 public class DocumentView extends javax.swing.JPanel {
 
@@ -18,6 +20,10 @@ public class DocumentView extends javax.swing.JPanel {
 	public DocumentView(TextEditor te) {
 		initComponents();
 		textEditor = te;
+	}
+
+	public void MarkAll(SearchContext context) {
+		SearchEngine.markAll(rSyntaxTextArea1, context);
 	}
 
 	public void LoadFile(File f) {

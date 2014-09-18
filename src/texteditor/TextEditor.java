@@ -3,6 +3,7 @@ package texteditor;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
+import org.fife.ui.rtextarea.SearchContext;
 
 public final class TextEditor extends javax.swing.JFrame {
 
@@ -11,6 +12,15 @@ public final class TextEditor extends javax.swing.JFrame {
 	public TextEditor() {
 		initComponents();
 		NewDocument();
+		searchPanel1.setVisible(false);
+		searchPanel1.SetMainForm(this);
+	}
+
+	public void Search(SearchContext context) {
+		DocumentView currentDocumentView = CurrentDocumentView();
+		if (currentDocumentView != null) {
+			currentDocumentView.MarkAll(context);
+		}
 	}
 
 	public void NewDocument() {
@@ -28,6 +38,7 @@ public final class TextEditor extends javax.swing.JFrame {
 				jTabbedPane1.add(documentView);
 				jTabbedPane1.setSelectedComponent(documentView);
 				documentView.LoadFile(f);
+				jTabbedPane1.getSelectedComponent().requestFocus();
 			}
 		}
 	}
@@ -86,6 +97,10 @@ public final class TextEditor extends javax.swing.JFrame {
 		DoExit();
 	}
 
+	void Find() {
+		searchPanel1.setVisible(!searchPanel1.isVisible());
+	}
+
 	public void RefreshDocumentTab(DocumentView documentView) {
 		int i = jTabbedPane1.indexOfComponent(documentView);
 		jTabbedPane1.setTitleAt(i, documentView.GetFilenameAlias());
@@ -96,14 +111,17 @@ public final class TextEditor extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        searchPanel1 = new texteditor.SearchPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jMenuFile = new javax.swing.JMenu();
         jMenuItemNew = new javax.swing.JMenuItem();
         jMenuItemOpen = new javax.swing.JMenuItem();
         jMenuItemClose = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemSaveAs = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
+        jMenuEdit = new javax.swing.JMenu();
+        jMenuItemFind = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -112,7 +130,7 @@ public final class TextEditor extends javax.swing.JFrame {
             }
         });
 
-        jMenu1.setText("File");
+        jMenuFile.setText("File");
 
         jMenuItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemNew.setText("New");
@@ -121,7 +139,7 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemNewActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemNew);
+        jMenuFile.add(jMenuItemNew);
 
         jMenuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemOpen.setText("Open");
@@ -130,7 +148,7 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemOpenActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemOpen);
+        jMenuFile.add(jMenuItemOpen);
 
         jMenuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemClose.setText("Close");
@@ -139,7 +157,7 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemCloseActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemClose);
+        jMenuFile.add(jMenuItemClose);
 
         jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemSave.setText("Save");
@@ -148,7 +166,7 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemSaveActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemSave);
+        jMenuFile.add(jMenuItemSave);
 
         jMenuItemSaveAs.setText("Save as...");
         jMenuItemSaveAs.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +174,7 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemSaveAsActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemSaveAs);
+        jMenuFile.add(jMenuItemSaveAs);
 
         jMenuItemExit.setText("Exit");
         jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
@@ -164,9 +182,22 @@ public final class TextEditor extends javax.swing.JFrame {
                 jMenuItemExitActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItemExit);
+        jMenuFile.add(jMenuItemExit);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenuFile);
+
+        jMenuEdit.setText("Edit");
+
+        jMenuItemFind.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemFind.setText("Find");
+        jMenuItemFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemFindActionPerformed(evt);
+            }
+        });
+        jMenuEdit.add(jMenuItemFind);
+
+        jMenuBar1.add(jMenuEdit);
 
         setJMenuBar(jMenuBar1);
 
@@ -176,14 +207,19 @@ public final class TextEditor extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -217,6 +253,10 @@ public final class TextEditor extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
 		ExitApplication();
     }//GEN-LAST:event_formWindowClosing
+
+    private void jMenuItemFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindActionPerformed
+		Find();
+    }//GEN-LAST:event_jMenuItemFindActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -259,14 +299,17 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuEdit;
+    private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
+    private javax.swing.JMenuItem jMenuItemFind;
     private javax.swing.JMenuItem jMenuItemNew;
     private javax.swing.JMenuItem jMenuItemOpen;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemSaveAs;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private texteditor.SearchPanel searchPanel1;
     // End of variables declaration//GEN-END:variables
 }
