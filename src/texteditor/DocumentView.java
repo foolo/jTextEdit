@@ -49,6 +49,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	public void MarkAll(SearchContext context) {
+		rSyntaxTextArea1.select(rSyntaxTextArea1.getCaretPosition(), rSyntaxTextArea1.getCaretPosition());
 		SearchEngine.markAll(rSyntaxTextArea1, context);
 	}
 

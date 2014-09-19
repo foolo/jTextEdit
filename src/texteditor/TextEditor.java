@@ -102,7 +102,7 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void EditFind() {
-		searchPanel1.setVisible(!searchPanel1.isVisible());
+		searchPanel1.setVisible(true);
 	}
 
 	public void RefreshDocumentTab(DocumentView documentView) {

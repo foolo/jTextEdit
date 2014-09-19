@@ -27,23 +27,26 @@ public class SearchPanel extends javax.swing.JPanel {
 		MarkAll();
 	}
 
-	void FindButtonClicked() {
-		UpdateSearchContext();
+	void Find() {
 		textEditor.CurrentDocumentView().Find(searchContext);
 	}
 
-	void ReplaceButtonClicked() {
-		UpdateSearchContext();
+	void Replace() {
 		textEditor.CurrentDocumentView().Replace(searchContext);
 	}
 
-	void ReplaceAllButtonClicked() {
-		UpdateSearchContext();
+	void ReplaceAll() {
 		textEditor.CurrentDocumentView().ReplaceAll(searchContext);
 	}
 
 	void MarkAll() {
 		textEditor.CurrentDocumentView().MarkAll(searchContext);
+	}
+
+	@Override
+	public void setVisible(boolean aFlag) {
+		super.setVisible(aFlag);
+		jTextFieldSearch.requestFocus();
 	}
 
 	/**
@@ -68,6 +71,11 @@ public class SearchPanel extends javax.swing.JPanel {
         jButtonReplaceAll = new javax.swing.JButton();
         jCheckBoxBackwards = new javax.swing.JCheckBox();
 
+        jTextFieldSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchActionPerformed(evt);
+            }
+        });
         jTextFieldSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextFieldSearchKeyReleased(evt);
@@ -127,6 +135,11 @@ public class SearchPanel extends javax.swing.JPanel {
         });
 
         jCheckBoxBackwards.setText("Backwards");
+        jCheckBoxBackwards.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBoxBackwardsItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -203,16 +216,24 @@ public class SearchPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jCheckBoxUseRegexItemStateChanged
 
     private void jButtonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFindActionPerformed
-		FindButtonClicked();
+		Find();
     }//GEN-LAST:event_jButtonFindActionPerformed
 
     private void jButtonReplaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReplaceActionPerformed
-		ReplaceButtonClicked();
+		Replace();
     }//GEN-LAST:event_jButtonReplaceActionPerformed
 
     private void jButtonReplaceAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReplaceAllActionPerformed
-		ReplaceAllButtonClicked();
+		ReplaceAll();
     }//GEN-LAST:event_jButtonReplaceAllActionPerformed
+
+    private void jTextFieldSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchActionPerformed
+		Find();
+    }//GEN-LAST:event_jTextFieldSearchActionPerformed
+
+    private void jCheckBoxBackwardsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBoxBackwardsItemStateChanged
+		UpdateSearchContext();
+    }//GEN-LAST:event_jCheckBoxBackwardsItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
