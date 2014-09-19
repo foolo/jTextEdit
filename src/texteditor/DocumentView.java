@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
+import org.fife.ui.rtextarea.SearchResult;
 
 public class DocumentView extends javax.swing.JPanel {
 
@@ -24,6 +25,27 @@ public class DocumentView extends javax.swing.JPanel {
 
 	public boolean IsNewAndEmpty() {
 		return (file == null) && !modified && rSyntaxTextArea1.getText().isEmpty();
+	}
+
+	public void Find(SearchContext context) {
+		SearchResult result = SearchEngine.find(rSyntaxTextArea1, context);
+		if (!result.wasFound()) {
+			if (context.getSearchForward()) {
+				rSyntaxTextArea1.setCaretPosition(0);
+			}
+			else {
+				rSyntaxTextArea1.setCaretPosition(rSyntaxTextArea1.getText().length() - 1);
+			}
+			SearchEngine.find(rSyntaxTextArea1, context);
+		}
+	}
+
+	public void Replace(SearchContext searchContext) {
+		SearchEngine.replace(rSyntaxTextArea1, searchContext);
+	}
+
+	public void ReplaceAll(SearchContext searchContext) {
+		SearchEngine.replaceAll(rSyntaxTextArea1, searchContext);
 	}
 
 	public void MarkAll(SearchContext context) {

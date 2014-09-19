@@ -21,14 +21,28 @@ public class SearchPanel extends javax.swing.JPanel {
 		searchContext.setReplaceWith(jTextFieldReplace.getText());
 		searchContext.setMatchCase(jCheckBoxMatchCase.isSelected());
 		searchContext.setRegularExpression(jCheckBoxUseRegex.isSelected());
-		searchContext.setSearchForward(true);
+		searchContext.setSearchForward(jCheckBoxBackwards.isSelected() == false);
 		searchContext.setSearchSelectionOnly(false);
 		searchContext.setWholeWord(jCheckBoxWholeWords.isSelected());
-
-		TriggerSearch();
+		MarkAll();
 	}
 
-	void TriggerSearch() {
+	void FindButtonClicked() {
+		UpdateSearchContext();
+		textEditor.CurrentDocumentView().Find(searchContext);
+	}
+
+	void ReplaceButtonClicked() {
+		UpdateSearchContext();
+		textEditor.CurrentDocumentView().Replace(searchContext);
+	}
+
+	void ReplaceAllButtonClicked() {
+		UpdateSearchContext();
+		textEditor.CurrentDocumentView().ReplaceAll(searchContext);
+	}
+
+	void MarkAll() {
 		textEditor.CurrentDocumentView().MarkAll(searchContext);
 	}
 
@@ -47,12 +61,12 @@ public class SearchPanel extends javax.swing.JPanel {
         jCheckBoxMatchCase = new javax.swing.JCheckBox();
         jCheckBoxWholeWords = new javax.swing.JCheckBox();
         jCheckBoxUseRegex = new javax.swing.JCheckBox();
-        jRadioButtonCurrentDocument = new javax.swing.JRadioButton();
-        jRadioButtonAllDocuments = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButtonFind = new javax.swing.JButton();
+        jButtonReplace = new javax.swing.JButton();
+        jButtonReplaceAll = new javax.swing.JButton();
+        jCheckBoxBackwards = new javax.swing.JCheckBox();
 
         jTextFieldSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -87,82 +101,84 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         });
 
-        buttonGroupSearchScope.add(jRadioButtonCurrentDocument);
-        jRadioButtonCurrentDocument.setText("Current document");
-
-        buttonGroupSearchScope.add(jRadioButtonAllDocuments);
-        jRadioButtonAllDocuments.setText("All open documents");
-
         jLabel1.setText("Search for");
 
         jLabel2.setText("Replace with");
 
-        jButton1.setText("up");
+        jButtonFind.setText("Find");
+        jButtonFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFindActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("down");
+        jButtonReplace.setText("Replace");
+        jButtonReplace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonReplaceActionPerformed(evt);
+            }
+        });
+
+        jButtonReplaceAll.setText("Replace all");
+        jButtonReplaceAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonReplaceAllActionPerformed(evt);
+            }
+        });
+
+        jCheckBoxBackwards.setText("Backwards");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel2)))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldReplace, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jCheckBoxMatchCase)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBoxUseRegex))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jCheckBoxUseRegex)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonFind))
+                            .addComponent(jCheckBoxBackwards)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxWholeWords)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addGap(4, 4, 4)
-                        .addComponent(jButton2)))
-                .addGap(18, 18, 18)
+                        .addComponent(jTextFieldReplace, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBoxWholeWords)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButtonCurrentDocument)
-                    .addComponent(jRadioButtonAllDocuments))
-                .addGap(18, 18, 18))
+                    .addComponent(jButtonReplace)
+                    .addComponent(jButtonReplaceAll))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldReplace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 5, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButtonCurrentDocument)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBoxMatchCase)
                     .addComponent(jCheckBoxUseRegex)
-                    .addComponent(jCheckBoxMatchCase))
+                    .addComponent(jButtonFind)
+                    .addComponent(jButtonReplace))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxWholeWords)
-                    .addComponent(jRadioButtonAllDocuments)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(11, 11, 11))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jCheckBoxWholeWords)
+                        .addComponent(jTextFieldReplace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jCheckBoxBackwards)
+                        .addComponent(jButtonReplaceAll))
+                    .addComponent(jLabel2)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -186,18 +202,30 @@ public class SearchPanel extends javax.swing.JPanel {
 		UpdateSearchContext();
     }//GEN-LAST:event_jCheckBoxUseRegexItemStateChanged
 
+    private void jButtonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFindActionPerformed
+		FindButtonClicked();
+    }//GEN-LAST:event_jButtonFindActionPerformed
+
+    private void jButtonReplaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReplaceActionPerformed
+		ReplaceButtonClicked();
+    }//GEN-LAST:event_jButtonReplaceActionPerformed
+
+    private void jButtonReplaceAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReplaceAllActionPerformed
+		ReplaceAllButtonClicked();
+    }//GEN-LAST:event_jButtonReplaceAllActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupSearchScope;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonFind;
+    private javax.swing.JButton jButtonReplace;
+    private javax.swing.JButton jButtonReplaceAll;
+    private javax.swing.JCheckBox jCheckBoxBackwards;
     private javax.swing.JCheckBox jCheckBoxMatchCase;
     private javax.swing.JCheckBox jCheckBoxUseRegex;
     private javax.swing.JCheckBox jCheckBoxWholeWords;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JRadioButton jRadioButtonAllDocuments;
-    private javax.swing.JRadioButton jRadioButtonCurrentDocument;
     private javax.swing.JTextField jTextFieldReplace;
     private javax.swing.JTextField jTextFieldSearch;
     // End of variables declaration//GEN-END:variables
