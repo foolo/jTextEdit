@@ -3,7 +3,6 @@ package texteditor;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
-import org.fife.ui.rtextarea.SearchContext;
 
 public final class TextEditor extends javax.swing.JFrame {
 
@@ -11,29 +10,24 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	public TextEditor() {
 		initComponents();
-		NewDocument();
+		FileNew();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
 	}
 
-	public void Search(SearchContext context) {
-		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView != null) {
-			currentDocumentView.MarkAll(context);
-		}
-	}
-
-	public void NewDocument() {
+	void FileNew() {
 		DocumentView document = new DocumentView(this);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
 	}
 
-	public void OpenDocument() {
-		int returnVal = jFileChooser1.showOpenDialog(this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File f = jFileChooser1.getSelectedFile();
-			if (f != null) {
+	void DoOpen(File f) {
+		DocumentView currentDocumentView = CurrentDocumentView();
+		if (currentDocumentView != null) {
+			if (currentDocumentView.IsNewAndEmpty()) {
+				currentDocumentView.LoadFile(f);
+			}
+			else {
 				DocumentView documentView = new DocumentView(this);
 				jTabbedPane1.add(documentView);
 				jTabbedPane1.setSelectedComponent(documentView);
@@ -43,7 +37,17 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
 	}
 
-	public boolean CloseDocument() {
+	void FileOpen() {
+		int returnVal = jFileChooser1.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File f = jFileChooser1.getSelectedFile();
+			if (f != null) {
+				DoOpen(f);
+			}
+		}
+	}
+
+	boolean FileClose() {
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView != null) {
 			if (currentDocumentView.HandleCurrentFile()) {
@@ -62,14 +66,14 @@ public final class TextEditor extends javax.swing.JFrame {
 		return ((DocumentView) c);
 	}
 
-	public void SaveDocument() {
+	void FileSave() {
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView != null) {
 			currentDocumentView.SaveDoc();
 		}
 	}
 
-	public void SaveDocumentAs() {
+	void FileSaveAs() {
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView != null) {
 			currentDocumentView.FileSaveAs();
@@ -79,7 +83,7 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	void CloseAllTabs() {
 		while (jTabbedPane1.getTabCount() > 0) {
-			if (CloseDocument() == false) {
+			if (FileClose() == false) {
 				return;
 			}
 		};
@@ -92,12 +96,12 @@ public final class TextEditor extends javax.swing.JFrame {
 		};
 	}
 
-	void ExitApplication() {
+	void FileExit() {
 		CloseAllTabs();
 		DoExit();
 	}
 
-	void Find() {
+	void EditFind() {
 		searchPanel1.setVisible(!searchPanel1.isVisible());
 	}
 
@@ -227,41 +231,41 @@ public final class TextEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
-		NewDocument();
+		FileNew();
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
-		OpenDocument();
+		FileOpen();
     }//GEN-LAST:event_jMenuItemOpenActionPerformed
 
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
-		SaveDocument();
+		FileSave();
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveAsActionPerformed
-		SaveDocumentAs();
+		FileSaveAs();
     }//GEN-LAST:event_jMenuItemSaveAsActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
-		ExitApplication();
+		FileExit();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
     private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCloseActionPerformed
-		CloseDocument();
+		FileClose();
     }//GEN-LAST:event_jMenuItemCloseActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-		ExitApplication();
+		FileExit();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItemFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindActionPerformed
-		Find();
+		EditFind();
     }//GEN-LAST:event_jMenuItemFindActionPerformed
 
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(final String args[]) {
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -293,7 +297,11 @@ public final class TextEditor extends javax.swing.JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new TextEditor().setVisible(true);
+				TextEditor textEditor = new TextEditor();
+				textEditor.setVisible(true);
+				for (String filename : args) {
+					textEditor.DoOpen(new File(filename));
+				}
 			}
 		});
 	}

@@ -22,6 +22,10 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditor = te;
 	}
 
+	public boolean IsNewAndEmpty() {
+		return (file == null) && !modified && rSyntaxTextArea1.getText().isEmpty();
+	}
+
 	public void MarkAll(SearchContext context) {
 		SearchEngine.markAll(rSyntaxTextArea1, context);
 	}

@@ -29,7 +29,7 @@ public class SearchPanel extends javax.swing.JPanel {
 	}
 
 	void TriggerSearch() {
-		textEditor.Search(searchContext);
+		textEditor.CurrentDocumentView().MarkAll(searchContext);
 	}
 
 	/**
