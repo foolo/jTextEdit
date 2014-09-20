@@ -15,7 +15,7 @@ import org.fife.ui.rtextarea.SearchResult;
 public class DocumentView extends javax.swing.JPanel {
 
 	File file = null;
-	boolean modified = false;
+	String lastSavedText = "";
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
 
@@ -28,8 +28,12 @@ public class DocumentView extends javax.swing.JPanel {
 		rSyntaxTextArea1.setLineWrap(wrapOn);
 	}
 
+	boolean IsModified() {
+		return !rSyntaxTextArea1.getText().equals(lastSavedText);
+	}
+
 	public boolean IsNewAndEmpty() {
-		return (file == null) && !modified && rSyntaxTextArea1.getText().isEmpty();
+		return (file == null) && !IsModified() && rSyntaxTextArea1.getText().isEmpty();
 	}
 
 	public void Find(SearchContext context) {
@@ -64,6 +68,7 @@ public class DocumentView extends javax.swing.JPanel {
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			rSyntaxTextArea1.read(br, null);
+			lastSavedText = rSyntaxTextArea1.getText();
 		}
 		catch (FileNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -82,14 +87,13 @@ public class DocumentView extends javax.swing.JPanel {
 		else {
 			alias = file.getName();
 		}
-		if (modified) {
+		if (IsModified()) {
 			alias = alias + " (*)";
 		}
 		return alias;
 	}
 
 	void KeyReleased() {
-		modified = true;
 		textEditor.HandleDocumentChanged(this);
 	}
 
@@ -102,7 +106,7 @@ public class DocumentView extends javax.swing.JPanel {
 		String text = rSyntaxTextArea1.getText();
 		if (FileHandler.WriteFile(fileToSave, text, this)) {
 			file = fileToSave;
-			modified = false;
+			lastSavedText = text;
 			textEditor.HandleDocumentChanged(this);
 			return true;
 		}
@@ -149,7 +153,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	boolean HandleCurrentFile() {
-		if (!modified) {
+		if (!IsModified()) {
 			return true;
 		}
 
@@ -187,14 +191,8 @@ public class DocumentView extends javax.swing.JPanel {
         rSyntaxTextArea1.setColumns(20);
         rSyntaxTextArea1.setRows(5);
         rSyntaxTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                rSyntaxTextArea1KeyPressed(evt);
-            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 rSyntaxTextArea1KeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                rSyntaxTextArea1KeyTyped(evt);
             }
         });
         jScrollPane1.setViewportView(rSyntaxTextArea1);
@@ -218,7 +216,6 @@ public class DocumentView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rSyntaxTextArea1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyReleased
-		System.out.println(evt);
 		if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			EscapePressed();
 		}
@@ -226,14 +223,6 @@ public class DocumentView extends javax.swing.JPanel {
 			KeyReleased();
 		}
     }//GEN-LAST:event_rSyntaxTextArea1KeyReleased
-
-    private void rSyntaxTextArea1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyPressed
-		//System.out.println(evt);
-    }//GEN-LAST:event_rSyntaxTextArea1KeyPressed
-
-    private void rSyntaxTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyTyped
-		System.out.println(evt);
-    }//GEN-LAST:event_rSyntaxTextArea1KeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
