@@ -1,13 +1,13 @@
 package texteditor;
 
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -15,66 +15,58 @@ import org.fife.ui.rtextarea.SearchResult;
 public class DocumentView extends javax.swing.JPanel {
 
 	File file = null;
-	String lastSavedText = "";
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
 
 	public DocumentView(TextEditor te) {
 		initComponents();
 		textEditor = te;
+		System.out.println(textEditorPane1.getFileName());
+
 	}
 
 	void SetWordWrap(boolean wrapOn) {
-		rSyntaxTextArea1.setLineWrap(wrapOn);
-	}
-
-	boolean IsModified() {
-		return !rSyntaxTextArea1.getText().equals(lastSavedText);
+		textEditorPane1.setLineWrap(wrapOn);
 	}
 
 	public boolean IsNewAndEmpty() {
-		return (file == null) && !IsModified() && rSyntaxTextArea1.getText().isEmpty();
+		boolean remoteOrNonExisting = !textEditorPane1.isLocalAndExists();
+		return remoteOrNonExisting && !textEditorPane1.isDirty() && textEditorPane1.getText().isEmpty();
 	}
 
 	public void Find(SearchContext context) {
-		SearchResult result = SearchEngine.find(rSyntaxTextArea1, context);
+		SearchResult result = SearchEngine.find(textEditorPane1, context);
 		if (!result.wasFound()) {
 			if (context.getSearchForward()) {
-				rSyntaxTextArea1.setCaretPosition(0);
+				textEditorPane1.setCaretPosition(0);
 			}
 			else {
-				rSyntaxTextArea1.setCaretPosition(rSyntaxTextArea1.getText().length() - 1);
+				textEditorPane1.setCaretPosition(textEditorPane1.getText().length() - 1);
 			}
-			SearchEngine.find(rSyntaxTextArea1, context);
+			SearchEngine.find(textEditorPane1, context);
 		}
 	}
 
 	public void Replace(SearchContext searchContext) {
-		SearchEngine.replace(rSyntaxTextArea1, searchContext);
+		SearchEngine.replace(textEditorPane1, searchContext);
 	}
 
 	public void ReplaceAll(SearchContext searchContext) {
-		SearchEngine.replaceAll(rSyntaxTextArea1, searchContext);
+		SearchEngine.replaceAll(textEditorPane1, searchContext);
 	}
 
 	public void MarkAll(SearchContext context) {
-		rSyntaxTextArea1.select(rSyntaxTextArea1.getCaretPosition(), rSyntaxTextArea1.getCaretPosition());
-		SearchEngine.markAll(rSyntaxTextArea1, context);
+		textEditorPane1.select(textEditorPane1.getCaretPosition(), textEditorPane1.getCaretPosition());
+		SearchEngine.markAll(textEditorPane1, context);
 	}
 
 	public void LoadFile(File f) {
 		file = f;
 		try {
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			rSyntaxTextArea1.read(br, null);
-			lastSavedText = rSyntaxTextArea1.getText();
-		}
-		catch (FileNotFoundException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage());
+			textEditorPane1.load(FileLocation.create(file), null);
 		}
 		catch (IOException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage());
+			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		textEditor.HandleDocumentChanged(this);
 	}
@@ -87,7 +79,7 @@ public class DocumentView extends javax.swing.JPanel {
 		else {
 			alias = file.getName();
 		}
-		if (IsModified()) {
+		if (textEditorPane1.isDirty()) {
 			alias = alias + " (*)";
 		}
 		return alias;
@@ -99,14 +91,13 @@ public class DocumentView extends javax.swing.JPanel {
 
 	void EscapePressed() {
 		textEditor.HandleEscapePressed();
-		SearchEngine.markAll(rSyntaxTextArea1, new SearchContext());
+		SearchEngine.markAll(textEditorPane1, new SearchContext());
 	}
 
 	public boolean DoSave(File fileToSave) {
-		String text = rSyntaxTextArea1.getText();
+		String text = textEditorPane1.getText();
 		if (FileHandler.WriteFile(fileToSave, text, this)) {
 			file = fileToSave;
-			lastSavedText = text;
 			textEditor.HandleDocumentChanged(this);
 			return true;
 		}
@@ -153,7 +144,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	boolean HandleCurrentFile() {
-		if (!IsModified()) {
+		if (!textEditorPane1.isDirty()) {
 			return true;
 		}
 
@@ -185,17 +176,17 @@ public class DocumentView extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        rSyntaxTextArea1 = new org.fife.ui.rsyntaxtextarea.RSyntaxTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        textEditorPane1 = new org.fife.ui.rsyntaxtextarea.TextEditorPane();
 
-        rSyntaxTextArea1.setColumns(20);
-        rSyntaxTextArea1.setRows(5);
-        rSyntaxTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
+        textEditorPane1.setColumns(20);
+        textEditorPane1.setRows(5);
+        textEditorPane1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                rSyntaxTextArea1KeyReleased(evt);
+                textEditorPane1KeyReleased(evt);
             }
         });
-        jScrollPane1.setViewportView(rSyntaxTextArea1);
+        jScrollPane2.setViewportView(textEditorPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -203,30 +194,30 @@ public class DocumentView extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rSyntaxTextArea1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyReleased
+    private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEditorPane1KeyReleased
 		if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			EscapePressed();
 		}
 		else {
 			KeyReleased();
 		}
-    }//GEN-LAST:event_rSyntaxTextArea1KeyReleased
+    }//GEN-LAST:event_textEditorPane1KeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private org.fife.ui.rsyntaxtextarea.RSyntaxTextArea rSyntaxTextArea1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private org.fife.ui.rsyntaxtextarea.TextEditorPane textEditorPane1;
     // End of variables declaration//GEN-END:variables
 }
