@@ -117,6 +117,10 @@ public final class TextEditor extends javax.swing.JFrame {
 		searchPanel1.setVisible(false);
 	}
 
+	void UpdateWordWrap() {
+		CurrentDocumentView().SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
+	}
+
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -131,6 +135,8 @@ public final class TextEditor extends javax.swing.JFrame {
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemSaveAs = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jCheckBoxMenuItemWordWrap = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
 
@@ -197,6 +203,19 @@ public final class TextEditor extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenuFile);
 
+        jMenu1.setText("View");
+
+        jCheckBoxMenuItemWordWrap.setSelected(true);
+        jCheckBoxMenuItemWordWrap.setText("Word wrap");
+        jCheckBoxMenuItemWordWrap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItemWordWrapActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxMenuItemWordWrap);
+
+        jMenuBar1.add(jMenu1);
+
         jMenuEdit.setText("Edit");
 
         jMenuItemFind.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
@@ -230,7 +249,7 @@ public final class TextEditor extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -268,6 +287,10 @@ public final class TextEditor extends javax.swing.JFrame {
     private void jMenuItemFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindActionPerformed
 		EditFind();
     }//GEN-LAST:event_jMenuItemFindActionPerformed
+
+    private void jCheckBoxMenuItemWordWrapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemWordWrapActionPerformed
+		UpdateWordWrap();
+    }//GEN-LAST:event_jCheckBoxMenuItemWordWrapActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -314,6 +337,8 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;

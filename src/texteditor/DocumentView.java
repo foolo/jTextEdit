@@ -24,6 +24,10 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditor = te;
 	}
 
+	void SetWordWrap(boolean wrapOn) {
+		rSyntaxTextArea1.setLineWrap(wrapOn);
+	}
+
 	public boolean IsNewAndEmpty() {
 		return (file == null) && !modified && rSyntaxTextArea1.getText().isEmpty();
 	}
