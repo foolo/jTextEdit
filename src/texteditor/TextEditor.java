@@ -23,17 +23,14 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	void DoOpen(File f) {
 		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView != null) {
-			if (currentDocumentView.IsNewAndEmpty()) {
-				currentDocumentView.LoadFile(f);
-			}
-			else {
-				DocumentView documentView = new DocumentView(this);
-				jTabbedPane1.add(documentView);
-				jTabbedPane1.setSelectedComponent(documentView);
-				documentView.LoadFile(f);
-				jTabbedPane1.getSelectedComponent().requestFocus();
-			}
+		if (currentDocumentView.IsNewAndEmpty()) {
+			currentDocumentView.LoadFile(f);
+		}
+		else {
+			DocumentView documentView = new DocumentView(this);
+			jTabbedPane1.add(documentView);
+			jTabbedPane1.setSelectedComponent(documentView);
+			documentView.LoadFile(f);
 		}
 	}
 
@@ -49,14 +46,12 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	boolean FileClose() {
 		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView != null) {
-			if (currentDocumentView.HandleCurrentFile()) {
-				jTabbedPane1.remove(currentDocumentView);
-				if (jTabbedPane1.getTabCount() == 0) {
-					DoExit();
-				}
-				return true;
+		if (currentDocumentView.HandleCurrentFile()) {
+			jTabbedPane1.remove(currentDocumentView);
+			if (jTabbedPane1.getTabCount() == 0) {
+				DoExit();
 			}
+			return true;
 		}
 		return false;
 	}
@@ -67,18 +62,11 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void FileSave() {
-		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView != null) {
-			currentDocumentView.SaveDoc();
-		}
+		CurrentDocumentView().SaveDoc();
 	}
 
 	void FileSaveAs() {
-		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView != null) {
-			currentDocumentView.FileSaveAs();
-
-		}
+		CurrentDocumentView().FileSaveAs();
 	}
 
 	void CloseAllTabs() {
