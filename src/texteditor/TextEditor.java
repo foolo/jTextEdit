@@ -105,9 +105,16 @@ public final class TextEditor extends javax.swing.JFrame {
 		searchPanel1.setVisible(true);
 	}
 
-	public void RefreshDocumentTab(DocumentView documentView) {
+	public void HandleDocumentChanged(DocumentView documentView) {
 		int i = jTabbedPane1.indexOfComponent(documentView);
 		jTabbedPane1.setTitleAt(i, documentView.GetFilenameAlias());
+		if (searchPanel1.isVisible()) {
+			searchPanel1.MarkAll();
+		}
+	}
+
+	public void HandleEscapePressed() {
+		searchPanel1.setVisible(false);
 	}
 
 	@SuppressWarnings("unchecked")

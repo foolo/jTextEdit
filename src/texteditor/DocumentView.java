@@ -1,5 +1,6 @@
 package texteditor;
 
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,7 +67,7 @@ public class DocumentView extends javax.swing.JPanel {
 		catch (IOException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage());
 		}
-		textEditor.RefreshDocumentTab(this);
+		textEditor.HandleDocumentChanged(this);
 	}
 
 	String GetFilenameAlias() {
@@ -83,9 +84,14 @@ public class DocumentView extends javax.swing.JPanel {
 		return alias;
 	}
 
-	void KeyTyped() {
+	void KeyReleased() {
 		modified = true;
-		textEditor.RefreshDocumentTab(this);
+		textEditor.HandleDocumentChanged(this);
+	}
+
+	void EscapePressed() {
+		textEditor.HandleEscapePressed();
+		SearchEngine.markAll(rSyntaxTextArea1, new SearchContext());
 	}
 
 	public boolean DoSave(File fileToSave) {
@@ -93,7 +99,7 @@ public class DocumentView extends javax.swing.JPanel {
 		if (FileHandler.WriteFile(fileToSave, text, this)) {
 			file = fileToSave;
 			modified = false;
-			textEditor.RefreshDocumentTab(this);
+			textEditor.HandleDocumentChanged(this);
 			return true;
 		}
 		return false;
@@ -177,6 +183,12 @@ public class DocumentView extends javax.swing.JPanel {
         rSyntaxTextArea1.setColumns(20);
         rSyntaxTextArea1.setRows(5);
         rSyntaxTextArea1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                rSyntaxTextArea1KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                rSyntaxTextArea1KeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 rSyntaxTextArea1KeyTyped(evt);
             }
@@ -201,8 +213,22 @@ public class DocumentView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void rSyntaxTextArea1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyReleased
+		System.out.println(evt);
+		if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			EscapePressed();
+		}
+		else {
+			KeyReleased();
+		}
+    }//GEN-LAST:event_rSyntaxTextArea1KeyReleased
+
+    private void rSyntaxTextArea1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyPressed
+		//System.out.println(evt);
+    }//GEN-LAST:event_rSyntaxTextArea1KeyPressed
+
     private void rSyntaxTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rSyntaxTextArea1KeyTyped
-		KeyTyped();
+		System.out.println(evt);
     }//GEN-LAST:event_rSyntaxTextArea1KeyTyped
 
 
