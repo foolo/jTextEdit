@@ -14,7 +14,7 @@ import org.fife.ui.rtextarea.SearchResult;
 
 public class DocumentView extends javax.swing.JPanel {
 
-	File file = null;
+	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
 
@@ -22,7 +22,6 @@ public class DocumentView extends javax.swing.JPanel {
 		initComponents();
 		textEditor = te;
 		System.out.println(textEditorPane1.getFileName());
-
 	}
 
 	void SetWordWrap(boolean wrapOn) {
@@ -61,9 +60,9 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	public void LoadFile(File f) {
-		file = f;
 		try {
-			textEditorPane1.load(FileLocation.create(file), null);
+			textEditorPane1.load(FileLocation.create(f), null);
+			m_untitled = false;
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
@@ -73,11 +72,11 @@ public class DocumentView extends javax.swing.JPanel {
 
 	String GetFilenameAlias() {
 		String alias;
-		if (file == null) {
+		if (m_untitled) {
 			alias = "Untitled";
 		}
 		else {
-			alias = file.getName();
+			alias = textEditorPane1.getFileName();
 		}
 		if (textEditorPane1.isDirty()) {
 			alias = alias + " (*)";
@@ -94,31 +93,37 @@ public class DocumentView extends javax.swing.JPanel {
 		SearchEngine.markAll(textEditorPane1, new SearchContext());
 	}
 
-	public boolean DoSave(File fileToSave) {
-		String text = textEditorPane1.getText();
-		if (FileHandler.WriteFile(fileToSave, text, this)) {
-			file = fileToSave;
-			textEditor.HandleDocumentChanged(this);
-			return true;
-		}
-		return false;
-	}
-
 	public boolean SaveDoc() {
-		if (file == null) {
+		if (m_untitled) {
 			return FileSaveAs();
 		}
 		else {
-			return DoSave(file);
+			try {
+				textEditorPane1.save();
+			}
+			catch (IOException ex) {
+				JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
+			}
+			textEditor.HandleDocumentChanged(this);
+			m_untitled = false;
+			return true;
 		}
 	}
 
 	public boolean FileSaveAs() {
 		File selectedFile = SelectFile();
 		if (selectedFile != null) {
-			return DoSave(selectedFile);
+			try {
+				textEditorPane1.saveAs(FileLocation.create(selectedFile));
+				textEditor.HandleDocumentChanged(this);
+				m_untitled = false;
+			}
+			catch (IOException ex) {
+				JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 
 	private File SelectFile() {
