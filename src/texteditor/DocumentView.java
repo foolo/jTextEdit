@@ -2,6 +2,7 @@ package texteditor;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
+import org.mozilla.universalchardet.UniversalDetector;
 
 public class DocumentView extends javax.swing.JPanel {
 
@@ -72,7 +74,8 @@ public class DocumentView extends javax.swing.JPanel {
 
 	public void LoadFile(File f) {
 		try {
-			textEditorPane1.load(FileLocation.create(f), null);
+			String encoding = EncodingDetector.GetEncoding(f);
+			textEditorPane1.load(FileLocation.create(f), encoding);
 			UpdateSyntaxEditingStyle();
 			m_untitled = false;
 		}
