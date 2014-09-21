@@ -5,8 +5,14 @@ import it.sauronsoftware.junique.JUnique;
 import it.sauronsoftware.junique.MessageHandler;
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 public final class TextEditor extends javax.swing.JFrame {
 
@@ -339,8 +345,17 @@ public final class TextEditor extends javax.swing.JFrame {
 						@Override
 						public String handle(String message) {
 							if (textEditor != null) {
-								textEditor.DoOpen(new File(message));
-								textEditor.toFront();
+								BASE64Decoder decoder = new BASE64Decoder();
+								try {
+									byte[] filenameBytes = decoder.decodeBuffer(message);
+									String filename = new String(filenameBytes);
+									//JOptionPane.showMessageDialog(null, "received: " + message);
+									textEditor.DoOpen(new File(filename));
+									textEditor.toFront();
+								}
+								catch (IOException ex) {
+									Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
+								}
 							}
 							return null;
 						}
@@ -361,7 +376,13 @@ public final class TextEditor extends javax.swing.JFrame {
 				else {
 					// Sends arguments to the already active instance.
 					for (int i = 0; i < args.length; i++) {
-						JUnique.sendMessage(id, args[i]);
+
+						String filename = args[i];
+						BASE64Encoder encoder = new BASE64Encoder();
+						String message = encoder.encode(filename.getBytes());
+
+						//JOptionPane.showMessageDialog(null, "sending: " + message);
+						JUnique.sendMessage(id, message);
 					}
 				}
 
