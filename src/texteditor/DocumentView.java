@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
@@ -21,7 +22,7 @@ public class DocumentView extends javax.swing.JPanel {
 	public DocumentView(TextEditor te) {
 		initComponents();
 		textEditor = te;
-		System.out.println(textEditorPane1.getFileName());
+		textEditorPane1.setAnimateBracketMatching(false);
 	}
 
 	void SetWordWrap(boolean wrapOn) {
@@ -59,9 +60,20 @@ public class DocumentView extends javax.swing.JPanel {
 		SearchEngine.markAll(textEditorPane1, context);
 	}
 
+	String GetFileExtension() {
+		return "cpp";
+	}
+
+	void UpdateSyntaxEditingStyle() {
+		String fileExt = FilenameUtils.getExtension(textEditorPane1.getFileName());
+		String syntaxMime = SettingsManager.GetSyntaxForFileExtension(fileExt);
+		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
+	}
+
 	public void LoadFile(File f) {
 		try {
 			textEditorPane1.load(FileLocation.create(f), null);
+			UpdateSyntaxEditingStyle();
 			m_untitled = false;
 		}
 		catch (IOException ex) {
@@ -116,6 +128,7 @@ public class DocumentView extends javax.swing.JPanel {
 			try {
 				textEditorPane1.saveAs(FileLocation.create(selectedFile));
 				textEditor.HandleDocumentChanged(this);
+				UpdateSyntaxEditingStyle();
 				m_untitled = false;
 			}
 			catch (IOException ex) {
