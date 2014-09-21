@@ -1,5 +1,8 @@
 package texteditor;
 
+import it.sauronsoftware.junique.AlreadyLockedException;
+import it.sauronsoftware.junique.JUnique;
+import it.sauronsoftware.junique.MessageHandler;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -294,9 +297,8 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
-	/**
-	 * @param args the command line arguments
-	 */
+	private static TextEditor textEditor = null;
+
 	public static void main(final String args[]) {
 		/* Set the Nimbus look and feel */
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -329,11 +331,40 @@ public final class TextEditor extends javax.swing.JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				TextEditor textEditor = new TextEditor();
-				textEditor.setVisible(true);
-				for (String filename : args) {
-					textEditor.DoOpen(new File(filename));
+
+				String id = TextEditor.class.getName();
+				boolean start;
+				try {
+					JUnique.acquireLock(id, new MessageHandler() {
+						@Override
+						public String handle(String message) {
+							if (textEditor != null) {
+								textEditor.DoOpen(new File(message));
+								textEditor.toFront();
+							}
+							return null;
+						}
+					});
+					start = true;
 				}
+				catch (AlreadyLockedException e) {
+					// Application already running.
+					start = false;
+				}
+				if (start) {
+					textEditor = new TextEditor();
+					textEditor.setVisible(true);
+					for (String filename : args) {
+						textEditor.DoOpen(new File(filename));
+					}
+				}
+				else {
+					// Sends arguments to the already active instance.
+					for (int i = 0; i < args.length; i++) {
+						JUnique.sendMessage(id, args[i]);
+					}
+				}
+
 			}
 		});
 	}
