@@ -3,6 +3,7 @@ package texteditor;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 
 public final class TextEditor extends javax.swing.JFrame {
 
@@ -132,6 +133,12 @@ public final class TextEditor extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+        });
+
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
             }
         });
 
@@ -279,6 +286,13 @@ public final class TextEditor extends javax.swing.JFrame {
     private void jCheckBoxMenuItemWordWrapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemWordWrapActionPerformed
 		UpdateWordWrap();
     }//GEN-LAST:event_jCheckBoxMenuItemWordWrapActionPerformed
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+		if (SwingUtilities.isMiddleMouseButton(evt)) {
+			System.out.println(jTabbedPane1.getSelectedIndex());
+			FileClose();
+		}
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
 
 	/**
 	 * @param args the command line arguments
