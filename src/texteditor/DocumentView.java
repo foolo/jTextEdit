@@ -2,7 +2,6 @@ package texteditor;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +12,6 @@ import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
-import org.mozilla.universalchardet.UniversalDetector;
 
 public class DocumentView extends javax.swing.JPanel {
 
@@ -72,9 +70,28 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
 	}
 
+	void SetCharacterDecoding(String decoding) {
+		textEditorPane1.setEncoding(decoding);
+	}
+
+	public boolean CanBeReloaded() {
+		return textEditorPane1.isLocalAndExists();
+	}
+
+	public void ReloadWithEncoding(String encoding) {
+		textEditorPane1.setEncoding(encoding);
+		try {
+			textEditorPane1.reload();
+		}
+		catch (IOException ex) {
+			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
 	public void LoadFile(File f) {
 		try {
 			String encoding = EncodingDetector.GetEncoding(f);
+			System.out.println("Detected encoding: " + encoding);
 			textEditorPane1.load(FileLocation.create(f), encoding);
 			UpdateSyntaxEditingStyle();
 			m_untitled = false;
