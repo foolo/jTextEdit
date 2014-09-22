@@ -3,6 +3,7 @@ package texteditor;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -78,14 +79,28 @@ public class DocumentView extends javax.swing.JPanel {
 		return textEditorPane1.isLocalAndExists();
 	}
 
+	private void SetEncoding(String encoding) {
+		try {
+			textEditorPane1.setEncoding(encoding);
+		}
+		catch (UnsupportedCharsetException ex) {
+			JOptionPane.showMessageDialog(this, "Encoding not supported: " + encoding);
+		}
+	}
+
 	public void ReloadWithEncoding(String encoding) {
-		textEditorPane1.setEncoding(encoding);
+		SetEncoding(encoding);
 		try {
 			textEditorPane1.reload();
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	public void ChangeEncoding(String encoding) {
+		SetEncoding(encoding);
+		textEditor.HandleDocumentChanged(this);
 	}
 
 	public void LoadFile(File f) {

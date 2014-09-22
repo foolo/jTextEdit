@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -84,7 +85,6 @@ public final class TextEditor extends javax.swing.JFrame {
 				return;
 			}
 		};
-
 	}
 
 	void DoExit() {
@@ -118,6 +118,31 @@ public final class TextEditor extends javax.swing.JFrame {
 		CurrentDocumentView().SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
 
+	void ReloadWithDifferentEncoding() {
+		DocumentView documentView = CurrentDocumentView();
+		if (documentView.CanBeReloaded()) {
+
+			EncodingDialog encodingDialog = new EncodingDialog(this, true);
+			encodingDialog.setVisible(true);
+			String encoding = encodingDialog.GetEncoding();
+			if (encoding != null) {
+				CurrentDocumentView().ReloadWithEncoding(encoding);
+			}
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "Can not reload new file");
+		}
+	}
+
+	void ChangeEncoding() {
+		EncodingDialog encodingDialog = new EncodingDialog(this, true);
+		encodingDialog.setVisible(true);
+		String encoding = encodingDialog.GetEncoding();
+		if (encoding != null) {
+			CurrentDocumentView().ChangeEncoding(encoding);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -136,6 +161,9 @@ public final class TextEditor extends javax.swing.JFrame {
         jCheckBoxMenuItemWordWrap = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
+        jMenuDocument = new javax.swing.JMenu();
+        jMenuItemReloadWithEncoding = new javax.swing.JMenuItem();
+        jMenuItemChangeEncoding = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -232,6 +260,26 @@ public final class TextEditor extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenuEdit);
 
+        jMenuDocument.setText("Document");
+
+        jMenuItemReloadWithEncoding.setText("Reload file with different encoding...");
+        jMenuItemReloadWithEncoding.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemReloadWithEncodingActionPerformed(evt);
+            }
+        });
+        jMenuDocument.add(jMenuItemReloadWithEncoding);
+
+        jMenuItemChangeEncoding.setText("Change encoding");
+        jMenuItemChangeEncoding.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemChangeEncodingActionPerformed(evt);
+            }
+        });
+        jMenuDocument.add(jMenuItemChangeEncoding);
+
+        jMenuBar1.add(jMenuDocument);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -302,7 +350,15 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
-	private static TextEditor textEditor = null;
+    private void jMenuItemReloadWithEncodingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReloadWithEncodingActionPerformed
+		ReloadWithDifferentEncoding();
+    }//GEN-LAST:event_jMenuItemReloadWithEncodingActionPerformed
+
+    private void jMenuItemChangeEncodingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemChangeEncodingActionPerformed
+		ChangeEncoding();
+    }//GEN-LAST:event_jMenuItemChangeEncodingActionPerformed
+
+	static TextEditor textEditor = null;
 
 	public static void main(final String args[]) {
 		/* Set the Nimbus look and feel */
@@ -393,13 +449,16 @@ public final class TextEditor extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuDocument;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenuItem jMenuItemChangeEncoding;
     private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFind;
     private javax.swing.JMenuItem jMenuItemNew;
     private javax.swing.JMenuItem jMenuItemOpen;
+    private javax.swing.JMenuItem jMenuItemReloadWithEncoding;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemSaveAs;
     private javax.swing.JTabbedPane jTabbedPane1;

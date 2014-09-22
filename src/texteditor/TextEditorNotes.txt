@@ -2,3 +2,4 @@
 # Features:
 - Drag and drop file to application
 - Close with scroll wheel click on tab
+- In-program feature request
