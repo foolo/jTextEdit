@@ -115,7 +115,10 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void UpdateWordWrap() {
-		CurrentDocumentView().SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
+		boolean wordWrapOn = jCheckBoxMenuItemWordWrap.isSelected();
+		for (Component c : jTabbedPane1.getComponents()) {
+			((DocumentView) c).SetWordWrap(wordWrapOn);
+		}
 	}
 
 	void ReloadWithDifferentEncoding() {
