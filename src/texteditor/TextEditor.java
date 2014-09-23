@@ -5,14 +5,10 @@ import it.sauronsoftware.junique.JUnique;
 import it.sauronsoftware.junique.MessageHandler;
 import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 public final class TextEditor extends javax.swing.JFrame {
 
@@ -95,13 +91,13 @@ public final class TextEditor extends javax.swing.JFrame {
 			if (FileClose() == false) {
 				return;
 			}
-		};
+		}
 	}
 
 	void DoExit() {
 		if (jTabbedPane1.getTabCount() == 0) {
 			dispose();
-		};
+		}
 	}
 
 	void FileExit() {
@@ -411,17 +407,11 @@ public final class TextEditor extends javax.swing.JFrame {
 						@Override
 						public String handle(String message) {
 							if (textEditor != null) {
-								BASE64Decoder decoder = new BASE64Decoder();
-								try {
-									byte[] filenameBytes = decoder.decodeBuffer(message);
-									String filename = new String(filenameBytes);
-									//JOptionPane.showMessageDialog(null, "received: " + message);
-									textEditor.DoOpen(new File(filename));
-									textEditor.toFront();
-								}
-								catch (IOException ex) {
-									Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
-								}
+								byte[] filenameBytes = Base64.decodeBase64(message);
+								String filename = new String(filenameBytes);
+								//JOptionPane.showMessageDialog(null, "received: " + message);
+								textEditor.DoOpen(new File(filename));
+								textEditor.toFront();
 							}
 							return null;
 						}
@@ -444,8 +434,7 @@ public final class TextEditor extends javax.swing.JFrame {
 					for (int i = 0; i < args.length; i++) {
 
 						String filename = args[i];
-						BASE64Encoder encoder = new BASE64Encoder();
-						String message = encoder.encode(filename.getBytes());
+						String message = new String(Base64.encodeBase64(filename.getBytes()));
 
 						//JOptionPane.showMessageDialog(null, "sending: " + message);
 						JUnique.sendMessage(id, message);
