@@ -25,11 +25,14 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	Settings settings = new Settings();
 
+	MySettingsListener mySettingsListener = new MySettingsListener();
+
 	public TextEditor() {
 		initComponents();
 		FileNew();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
+		settings.AddListener(mySettingsListener);
 	}
 
 	void FileNew() {

@@ -1,13 +1,21 @@
 package texteditor;
 
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 public class Settings {
+
+	private final Preferences prefs = Preferences.userNodeForPackage(Settings.class);
 
 	private final ArrayList<SettingsListener> listeners = new ArrayList<>();
 
 	void AddListener(SettingsListener settingsListener) {
 		listeners.add(settingsListener);
+
+		// Send all events
+		NotifyListeners(new SettingsEvent.WordWrapEvent());
+		//NotifyListeners(new SettingsEvent....
+		//...
 	}
 
 	private void NotifyListeners(SettingsEvent event) {
@@ -16,15 +24,16 @@ public class Settings {
 		}
 	}
 
-	private boolean wordWrap = false;
+	////////////////////////////////////////////////////////////////////////
+	private static final String WORD_WRAP = "word_wrap";
 
-	void SetWordWrap(boolean ww) {
-		wordWrap = ww;
+	void SetWordWrap(boolean wordWrap) {
+		prefs.putBoolean(WORD_WRAP, wordWrap);
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
 	}
 
 	boolean GetWordWrap() {
-		return wordWrap;
+		return prefs.getBoolean(WORD_WRAP, false);
 	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {
