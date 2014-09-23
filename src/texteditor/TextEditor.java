@@ -18,6 +18,8 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
+	SettingsManager settingsManager = new SettingsManager();
+
 	public TextEditor() {
 		initComponents();
 		FileNew();
@@ -26,7 +28,7 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void FileNew() {
-		DocumentView document = new DocumentView(this);
+		DocumentView document = new DocumentView(this, settingsManager);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
 	}
@@ -37,7 +39,7 @@ public final class TextEditor extends javax.swing.JFrame {
 			currentDocumentView.LoadFile(f);
 		}
 		else {
-			DocumentView documentView = new DocumentView(this);
+			DocumentView documentView = new DocumentView(this, settingsManager);
 			jTabbedPane1.add(documentView);
 			jTabbedPane1.setSelectedComponent(documentView);
 			documentView.LoadFile(f);

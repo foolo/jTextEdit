@@ -2,7 +2,7 @@ package texteditor;
 
 public class SettingsManager {
 
-	static String GetSyntaxForFileExtension(String fileExtension) {
+	String GetSyntaxForFileExtension(String fileExtension) {
 		switch (fileExtension) {
 			case "bat":
 				return "text/bat";

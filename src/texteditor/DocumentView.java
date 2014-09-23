@@ -19,9 +19,11 @@ public class DocumentView extends javax.swing.JPanel {
 	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
+	SettingsManager settingsManager;
 
-	public DocumentView(TextEditor te) {
+	public DocumentView(TextEditor te, SettingsManager sm) {
 		initComponents();
+		settingsManager = sm;
 		textEditor = te;
 		textEditorPane1.setAnimateBracketMatching(false);
 	}
@@ -67,7 +69,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 	void UpdateSyntaxEditingStyle() {
 		String fileExt = FilenameUtils.getExtension(textEditorPane1.getFileName());
-		String syntaxMime = SettingsManager.GetSyntaxForFileExtension(fileExt);
+		String syntaxMime = settingsManager.GetSyntaxForFileExtension(fileExt);
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
 	}
 
