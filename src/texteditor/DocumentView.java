@@ -20,7 +20,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 		@Override
 		void WordWrapChanged() {
-			boolean wrapOn = settingsManager.GetWordWrap();
+			boolean wrapOn = settings.GetWordWrap();
 			textEditorPane1.setLineWrap(wrapOn);
 		}
 	}
@@ -30,14 +30,14 @@ public class DocumentView extends javax.swing.JPanel {
 	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
-	SettingsManager settingsManager;
+	Settings settings;
 
-	public DocumentView(TextEditor te, SettingsManager sm) {
+	public DocumentView(TextEditor te, Settings s) {
 		initComponents();
-		settingsManager = sm;
+		settings = s;
 		textEditor = te;
 		textEditorPane1.setAnimateBracketMatching(false);
-		settingsManager.AddListener(mySettingsListener);
+		settings.AddListener(mySettingsListener);
 	}
 
 	public boolean IsNewAndEmpty() {
@@ -77,7 +77,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 	void UpdateSyntaxEditingStyle() {
 		String fileExt = FilenameUtils.getExtension(textEditorPane1.getFileName());
-		String syntaxMime = settingsManager.GetSyntaxForFileExtension(fileExt);
+		String syntaxMime = settings.GetSyntaxForFileExtension(fileExt);
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
 	}
 

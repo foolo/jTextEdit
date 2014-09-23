@@ -16,14 +16,14 @@ public final class TextEditor extends javax.swing.JFrame {
 
 		@Override
 		void WordWrapChanged() {
-			boolean wrapOn = settingsManager.GetWordWrap();
+			boolean wrapOn = settings.GetWordWrap();
 			jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
 		}
 	}
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
-	SettingsManager settingsManager = new SettingsManager();
+	Settings settings = new Settings();
 
 	public TextEditor() {
 		initComponents();
@@ -33,7 +33,7 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void FileNew() {
-		DocumentView document = new DocumentView(this, settingsManager);
+		DocumentView document = new DocumentView(this, settings);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
 	}
@@ -44,7 +44,7 @@ public final class TextEditor extends javax.swing.JFrame {
 			currentDocumentView.LoadFile(f);
 		}
 		else {
-			DocumentView documentView = new DocumentView(this, settingsManager);
+			DocumentView documentView = new DocumentView(this, settings);
 			jTabbedPane1.add(documentView);
 			jTabbedPane1.setSelectedComponent(documentView);
 			documentView.LoadFile(f);
@@ -122,7 +122,7 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void UpdateWordWrap() {
-		settingsManager.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
+		settings.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
 
 	void ReloadWithDifferentEncoding() {

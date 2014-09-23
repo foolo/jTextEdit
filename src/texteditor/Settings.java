@@ -2,7 +2,7 @@ package texteditor;
 
 import java.util.ArrayList;
 
-public class SettingsManager {
+public class Settings {
 
 	private final ArrayList<SettingsListener> listeners = new ArrayList<>();
 
