@@ -1,6 +1,31 @@
 package texteditor;
 
+import java.util.ArrayList;
+
 public class SettingsManager {
+
+	private final ArrayList<SettingsListener> listeners = new ArrayList<>();
+
+	void AddListener(SettingsListener settingsListener) {
+		listeners.add(settingsListener);
+	}
+
+	private void NotifyListeners(SettingsEvent event) {
+		for (SettingsListener sl : listeners) {
+			event.notify(sl);
+		}
+	}
+
+	private boolean wordWrap = false;
+
+	void SetWordWrap(boolean ww) {
+		wordWrap = ww;
+		NotifyListeners(new SettingsEvent.WordWrapEvent());
+	}
+
+	boolean GetWordWrap() {
+		return wordWrap;
+	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {
 		switch (fileExtension) {

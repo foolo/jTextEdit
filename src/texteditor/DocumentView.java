@@ -16,6 +16,17 @@ import org.fife.ui.rtextarea.SearchResult;
 
 public class DocumentView extends javax.swing.JPanel {
 
+	private class MySettingsListener extends SettingsListener {
+
+		@Override
+		void WordWrapChanged() {
+			boolean wrapOn = settingsManager.GetWordWrap();
+			textEditorPane1.setLineWrap(wrapOn);
+		}
+	}
+
+	MySettingsListener mySettingsListener = new MySettingsListener();
+
 	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TextEditor textEditor;
@@ -26,10 +37,7 @@ public class DocumentView extends javax.swing.JPanel {
 		settingsManager = sm;
 		textEditor = te;
 		textEditorPane1.setAnimateBracketMatching(false);
-	}
-
-	void SetWordWrap(boolean wrapOn) {
-		textEditorPane1.setLineWrap(wrapOn);
+		settingsManager.AddListener(mySettingsListener);
 	}
 
 	public boolean IsNewAndEmpty() {
@@ -275,4 +283,5 @@ public class DocumentView extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private org.fife.ui.rsyntaxtextarea.TextEditorPane textEditorPane1;
     // End of variables declaration//GEN-END:variables
+
 }

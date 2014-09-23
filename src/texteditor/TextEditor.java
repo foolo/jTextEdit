@@ -16,6 +16,15 @@ import sun.misc.BASE64Encoder;
 
 public final class TextEditor extends javax.swing.JFrame {
 
+	private class MySettingsListener extends SettingsListener {
+
+		@Override
+		void WordWrapChanged() {
+			boolean wrapOn = settingsManager.GetWordWrap();
+			jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
+		}
+	}
+
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
 	SettingsManager settingsManager = new SettingsManager();
@@ -117,10 +126,7 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void UpdateWordWrap() {
-		boolean wordWrapOn = jCheckBoxMenuItemWordWrap.isSelected();
-		for (Component c : jTabbedPane1.getComponents()) {
-			((DocumentView) c).SetWordWrap(wordWrapOn);
-		}
+		settingsManager.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
 
 	void ReloadWithDifferentEncoding() {
