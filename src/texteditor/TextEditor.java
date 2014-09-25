@@ -5,9 +5,15 @@ import it.sauronsoftware.junique.JUnique;
 import it.sauronsoftware.junique.MessageHandler;
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.apache.commons.codec.binary.Base64;
 
 public final class TextEditor extends javax.swing.JFrame {
@@ -370,62 +376,72 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	static TextEditor textEditor = null;
 
-	public static void main(final String args[]) {
-		/* Set the Nimbus look and feel */
-		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
+	public static final Logger logger = Logger.getLogger(TextEditor.class.getName());
+
+	static void SetLookAndFeel() {
+		logger.info("SystemLookAndFeelClassName: " + UIManager.getSystemLookAndFeelClassName());
+		for (UIManager.LookAndFeelInfo lookAndFeelInfo : UIManager.getInstalledLookAndFeels()) {
+			logger.info(lookAndFeelInfo.getClassName());
+		}
+
 		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
+			String osVersion = System.getProperty("os.name");
+			if (osVersion.contains("Linux")) {
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+			}
+			else {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			}
 		}
-		catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(TextEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+			Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(TextEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-		catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(TextEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-		catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(TextEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-		//</editor-fold>
+	}
 
-		/* Create and display the form */
+	static void InitializeLogging() {
+		try {
+			File temp = File.createTempFile(TextEditor.class.getSimpleName(), ".log");
+			FileHandler fh = new FileHandler(temp.getAbsolutePath());
+			fh.setFormatter(new SimpleFormatter());
+			logger.addHandler(fh);
+
+		}
+		catch (IOException | SecurityException ex) {
+			Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	static boolean CheckInstance(String id) {
+		try {
+			JUnique.acquireLock(id, new MessageHandler() {
+				@Override
+				public String handle(String message) {
+					if (textEditor != null) {
+						byte[] filenameBytes = Base64.decodeBase64(message);
+						String filename = new String(filenameBytes);
+						textEditor.DoOpen(new File(filename));
+						textEditor.toFront();
+					}
+					return null;
+				}
+			});
+			return true;
+		}
+		catch (AlreadyLockedException e) {
+			return false;
+		}
+	}
+
+	public static void main(final String args[]) {
+
+		InitializeLogging();
+
+		SetLookAndFeel();
+
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-
-				String id = TextEditor.class.getName();
-				boolean start;
-				try {
-					JUnique.acquireLock(id, new MessageHandler() {
-						@Override
-						public String handle(String message) {
-							if (textEditor != null) {
-								byte[] filenameBytes = Base64.decodeBase64(message);
-								String filename = new String(filenameBytes);
-								//JOptionPane.showMessageDialog(null, "received: " + message);
-								textEditor.DoOpen(new File(filename));
-								textEditor.toFront();
-							}
-							return null;
-						}
-					});
-					start = true;
-				}
-				catch (AlreadyLockedException e) {
-					// Application already running.
-					start = false;
-				}
-				if (start) {
+				if (CheckInstance(TextEditor.class.getName())) {
 					textEditor = new TextEditor();
 					textEditor.setVisible(true);
 					for (String filename : args) {
@@ -433,14 +449,9 @@ public final class TextEditor extends javax.swing.JFrame {
 					}
 				}
 				else {
-					// Sends arguments to the already active instance.
-					for (int i = 0; i < args.length; i++) {
-
-						String filename = args[i];
+					for (String filename : args) {
 						String message = new String(Base64.encodeBase64(filename.getBytes()));
-
-						//JOptionPane.showMessageDialog(null, "sending: " + message);
-						JUnique.sendMessage(id, message);
+						JUnique.sendMessage(TextEditor.class.getName(), message);
 					}
 				}
 
