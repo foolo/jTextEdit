@@ -18,11 +18,6 @@ public class Application {
 	public static final Logger logger = Logger.getLogger(TextEditor.class.getName());
 
 	static void SetLookAndFeel() {
-		logger.info("SystemLookAndFeelClassName: " + UIManager.getSystemLookAndFeelClassName());
-		for (UIManager.LookAndFeelInfo lookAndFeelInfo : UIManager.getInstalledLookAndFeels()) {
-			logger.info(lookAndFeelInfo.getClassName());
-		}
-
 		try {
 			String osVersion = System.getProperty("os.name");
 			if (osVersion.contains("Linux")) {

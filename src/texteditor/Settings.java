@@ -1,7 +1,10 @@
 package texteditor;
 
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
+import util.Arithmetics;
 
 public class Settings {
 
@@ -14,7 +17,7 @@ public class Settings {
 
 		// Send all events
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
-		//NotifyListeners(new SettingsEvent....
+		NotifyListeners(new SettingsEvent.GeometryEvent());
 		//...
 	}
 
@@ -26,6 +29,10 @@ public class Settings {
 
 	////////////////////////////////////////////////////////////////////////
 	private static final String WORD_WRAP = "word_wrap";
+	private static final String MAIN_BOUNDS_X = "main_bounds_x";
+	private static final String MAIN_BOUNDS_Y = "main_bounds_y";
+	private static final String MAIN_BOUNDS_WIDTH = "main_bounds_width";
+	private static final String MAIN_BOUNDS_HEIGHT = "main_bounds_height";
 
 	void SetWordWrap(boolean wordWrap) {
 		prefs.putBoolean(WORD_WRAP, wordWrap);
@@ -34,6 +41,34 @@ public class Settings {
 
 	boolean GetWordWrap() {
 		return prefs.getBoolean(WORD_WRAP, false);
+	}
+
+	void SetMainFormBounds(Rectangle bounds) {
+		prefs.putInt(MAIN_BOUNDS_X, bounds.x);
+		prefs.putInt(MAIN_BOUNDS_Y, bounds.y);
+		prefs.putInt(MAIN_BOUNDS_WIDTH, bounds.width);
+		prefs.putInt(MAIN_BOUNDS_HEIGHT, bounds.height);
+	}
+
+	Rectangle GetMainFormBounds() {
+		int x = prefs.getInt(MAIN_BOUNDS_X, 0);
+		int y = prefs.getInt(MAIN_BOUNDS_Y, 0);
+		int width = prefs.getInt(MAIN_BOUNDS_WIDTH, 700);
+		int height = prefs.getInt(MAIN_BOUNDS_HEIGHT, 500);
+
+		int scr_width = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int scr_height = Toolkit.getDefaultToolkit().getScreenSize().height;
+
+		width = Arithmetics.UpperBound(width, scr_width);
+		height = Arithmetics.UpperBound(height, scr_height);
+
+		x = Arithmetics.LowerBound(x, 0);
+		y = Arithmetics.LowerBound(y, 0);
+
+		x = Arithmetics.UpperBound(x, scr_width - width);
+		y = Arithmetics.UpperBound(y, scr_height - height);
+
+		return new Rectangle(x, y, width, height);
 	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {

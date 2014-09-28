@@ -1,6 +1,7 @@
 package texteditor;
 
 import java.awt.Component;
+import java.awt.Rectangle;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -15,6 +16,13 @@ public final class TextEditor extends javax.swing.JFrame {
 			boolean wrapOn = settings.GetWordWrap();
 			jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
 		}
+
+		@Override
+		void GeometryChanged() {
+			Rectangle bounds = settings.GetMainFormBounds();
+			setBounds(bounds);
+		}
+
 	}
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
@@ -120,6 +128,10 @@ public final class TextEditor extends javax.swing.JFrame {
 		searchPanel1.setVisible(false);
 	}
 
+	void FormBoundsChanged() {
+		settings.SetMainFormBounds(getBounds());
+	}
+
 	void UpdateWordWrap() {
 		settings.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
@@ -175,6 +187,14 @@ public final class TextEditor extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+        });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
+            }
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
             }
         });
 
@@ -359,6 +379,14 @@ public final class TextEditor extends javax.swing.JFrame {
     private void jMenuItemChangeEncodingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemChangeEncodingActionPerformed
 		ChangeEncoding();
     }//GEN-LAST:event_jMenuItemChangeEncodingActionPerformed
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+		FormBoundsChanged(); // improvement: only when resizing ends
+    }//GEN-LAST:event_formComponentResized
+
+    private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+		FormBoundsChanged(); // improvement: only when movement ends
+    }//GEN-LAST:event_formComponentMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
