@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import javax.swing.UIManager;
 import org.apache.commons.codec.binary.Base64;
 
@@ -43,7 +42,8 @@ public class Application {
 		try {
 			File temp = File.createTempFile(TextEditor.class.getSimpleName(), ".log");
 			FileHandler fh = new FileHandler(temp.getAbsolutePath());
-			fh.setFormatter(new SimpleFormatter());
+			fh.setFormatter(new MyFormatter());
+			logger.setUseParentHandlers(false);
 			logger.addHandler(fh);
 		}
 		catch (IOException ex) {
