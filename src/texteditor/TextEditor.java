@@ -3,6 +3,7 @@ package texteditor;
 import java.awt.Component;
 import java.awt.Rectangle;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -24,6 +25,8 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
 
 	}
+
+	ArrayList<DocumentView> documentStack = new ArrayList<>();
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
@@ -69,9 +72,18 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	boolean FileClose() {
+
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView.HandleCurrentFile()) {
-			jTabbedPane1.remove(currentDocumentView);
+			documentStack.remove(currentDocumentView);
+			ArrayList<DocumentView> documentStackBackup = new ArrayList<>(documentStack);
+			jTabbedPane1.remove(currentDocumentView); // Will trigger TabChanged, which will affect documentStack
+			documentStack = documentStackBackup;
+
+			if (!documentStack.isEmpty()) {
+				jTabbedPane1.setSelectedComponent(documentStack.get(0));
+			}
+
 			if (jTabbedPane1.getTabCount() == 0) {
 				DoExit();
 			}
@@ -82,7 +94,12 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	DocumentView CurrentDocumentView() {
 		Component c = jTabbedPane1.getSelectedComponent();
-		return ((DocumentView) c);
+		if (c != null) {
+			return ((DocumentView) c);
+		}
+		else {
+			return new DocumentView(this, settings);
+		}
 	}
 
 	void FileSave() {
@@ -130,6 +147,18 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	void FormBoundsChanged() {
 		settings.SetMainFormBounds(getBounds());
+	}
+
+	void TabChanged() {
+		DocumentView newTab = CurrentDocumentView();
+		if (documentStack.contains(newTab)) {
+			documentStack.remove(newTab);
+		}
+		// Null check needed here. It might be the last tab that is closed.
+		if (newTab != null) {
+			documentStack.add(0, newTab);
+			System.out.println("OVER: " + newTab.GetFilenameAlias());
+		}
 	}
 
 	void UpdateWordWrap() {
@@ -201,6 +230,11 @@ public final class TextEditor extends javax.swing.JFrame {
         jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTabbedPane1MouseClicked(evt);
+            }
+        });
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
             }
         });
 
@@ -367,7 +401,6 @@ public final class TextEditor extends javax.swing.JFrame {
 
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
 		if (SwingUtilities.isMiddleMouseButton(evt)) {
-			System.out.println(jTabbedPane1.getSelectedIndex());
 			FileClose();
 		}
     }//GEN-LAST:event_jTabbedPane1MouseClicked
@@ -387,6 +420,10 @@ public final class TextEditor extends javax.swing.JFrame {
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
 		FormBoundsChanged(); // improvement: only when movement ends
     }//GEN-LAST:event_formComponentMoved
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+		TabChanged();
+    }//GEN-LAST:event_jTabbedPane1StateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
