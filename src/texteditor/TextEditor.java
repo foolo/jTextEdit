@@ -1,7 +1,11 @@
 package texteditor;
 
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -34,8 +38,50 @@ public final class TextEditor extends javax.swing.JFrame {
 
 	MySettingsListener mySettingsListener = new MySettingsListener();
 
+	DocumentSwitcher documentSwitcher = null;
+
+	private void PassCtrlTabToSwitcher(Frame frame, boolean forward) {
+		if (documentSwitcher == null) {
+			documentSwitcher = new DocumentSwitcher(frame, forward, documentStack);
+			documentSwitcher.setVisible(true);
+			documentSwitcher = null;
+		}
+		else {
+			documentSwitcher.Navigate(forward);
+		}
+	}
+
+	void initializeGlobalKeys() {
+		final Frame thisFrame = this;
+		KeyEventDispatcher keyEventDispatcher = new KeyEventDispatcher() {
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (e.getID() == KeyEvent.KEY_RELEASED) {
+					if (e.getKeyCode() == KeyEvent.VK_TAB) {
+						if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
+							PassCtrlTabToSwitcher(thisFrame, true);
+						}
+						else if (e.getModifiersEx() == (KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK)) {
+							PassCtrlTabToSwitcher(thisFrame, false);
+						}
+					}
+					else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+						if (documentSwitcher != null) {
+							DocumentView selectedDocumentView = documentSwitcher.GetSelectedDocument();
+							documentSwitcher.dispose();
+							jTabbedPane1.setSelectedComponent(selectedDocumentView);
+						}
+					}
+				}
+				return false;
+			}
+		};
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
+	}
+
 	public TextEditor() {
 		initComponents();
+		initializeGlobalKeys();
 		FileNew();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
@@ -72,7 +118,6 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	boolean FileClose() {
-
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView.HandleCurrentFile()) {
 			documentStack.remove(currentDocumentView);
@@ -157,7 +202,6 @@ public final class TextEditor extends javax.swing.JFrame {
 		// Null check needed here. It might be the last tab that is closed.
 		if (newTab != null) {
 			documentStack.add(0, newTab);
-			System.out.println("OVER: " + newTab.GetFilenameAlias());
 		}
 	}
 

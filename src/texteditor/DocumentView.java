@@ -141,6 +141,11 @@ public class DocumentView extends javax.swing.JPanel {
 		return alias;
 	}
 
+	@Override
+	public String toString() {
+		return GetFilenameAlias();
+	}
+
 	void KeyReleased() {
 		textEditor.HandleDocumentChanged(this);
 	}
