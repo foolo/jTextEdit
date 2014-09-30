@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -26,8 +27,15 @@ public final class TextEditor extends javax.swing.JFrame {
 		void GeometryChanged() {
 			Rectangle bounds = settings.GetMainFormBounds();
 			setBounds(bounds);
+			int newState = 0;
+			if (settings.GetIsMaximizedHorizontal()) {
+				newState |= JFrame.MAXIMIZED_HORIZ;
+			}
+			if (settings.GetIsMaximizedVertical()) {
+				newState |= JFrame.MAXIMIZED_VERT;
+			}
+			setExtendedState(newState);
 		}
-
 	}
 
 	ArrayList<DocumentView> documentStack = new ArrayList<>();
@@ -191,7 +199,15 @@ public final class TextEditor extends javax.swing.JFrame {
 	}
 
 	void FormBoundsChanged() {
-		settings.SetMainFormBounds(getBounds());
+		boolean isMaximized = ((getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH);
+		if (!isMaximized) {
+			settings.SetMainFormBounds(getBounds());
+		}
+	}
+
+	void WindowStateChanged(int newState) {
+		settings.SetIsMaximizedVertical((newState & JFrame.MAXIMIZED_VERT) != 0);
+		settings.SetIsMaximizedHorizontal((newState & JFrame.MAXIMIZED_HORIZ) != 0);
 	}
 
 	void TabChanged() {
@@ -268,6 +284,11 @@ public final class TextEditor extends javax.swing.JFrame {
             }
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
+            }
+        });
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
             }
         });
 
@@ -468,6 +489,10 @@ public final class TextEditor extends javax.swing.JFrame {
     private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
 		TabChanged();
     }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
+		WindowStateChanged(evt.getNewState());
+    }//GEN-LAST:event_formWindowStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

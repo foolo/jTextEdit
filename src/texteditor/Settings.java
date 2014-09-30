@@ -33,6 +33,8 @@ public class Settings {
 	private static final String MAIN_BOUNDS_Y = "main_bounds_y";
 	private static final String MAIN_BOUNDS_WIDTH = "main_bounds_width";
 	private static final String MAIN_BOUNDS_HEIGHT = "main_bounds_height";
+	private static final String IS_MAXIMIZED_H = "is_maximized_h";
+	private static final String IS_MAXIMIZED_V = "is_maximized_v";
 
 	void SetWordWrap(boolean wordWrap) {
 		prefs.putBoolean(WORD_WRAP, wordWrap);
@@ -69,6 +71,22 @@ public class Settings {
 		y = Arithmetics.UpperBound(y, scr_height - height);
 
 		return new Rectangle(x, y, width, height);
+	}
+
+	boolean GetIsMaximizedHorizontal() {
+		return prefs.getBoolean(IS_MAXIMIZED_H, false);
+	}
+
+	void SetIsMaximizedHorizontal(boolean isMaximized) {
+		prefs.putBoolean(IS_MAXIMIZED_H, isMaximized);
+	}
+
+	boolean GetIsMaximizedVertical() {
+		return prefs.getBoolean(IS_MAXIMIZED_V, false);
+	}
+
+	void SetIsMaximizedVertical(boolean isMaximized) {
+		prefs.putBoolean(IS_MAXIMIZED_V, isMaximized);
 	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {
