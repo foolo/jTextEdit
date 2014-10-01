@@ -11,12 +11,4 @@ public interface SettingsEvent {
 			settingsListener.WordWrapChanged();
 		}
 	}
-
-	public class GeometryEvent implements SettingsEvent {
-
-		@Override
-		public void notify(SettingsListener settingsListener) {
-			settingsListener.GeometryChanged();
-		}
-	}
 }

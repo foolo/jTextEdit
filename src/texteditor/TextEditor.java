@@ -15,36 +15,11 @@ import javax.swing.SwingUtilities;
 
 public final class TextEditor extends javax.swing.JFrame {
 
-	private class MySettingsListener extends SettingsListener {
-
-		@Override
-		void WordWrapChanged() {
-			boolean wrapOn = settings.GetWordWrap();
-			jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
-		}
-
-		@Override
-		void GeometryChanged() {
-			Rectangle bounds = settings.GetMainFormBounds();
-			setBounds(bounds);
-			int newState = 0;
-			if (settings.GetIsMaximizedHorizontal()) {
-				newState |= JFrame.MAXIMIZED_HORIZ;
-			}
-			if (settings.GetIsMaximizedVertical()) {
-				newState |= JFrame.MAXIMIZED_VERT;
-			}
-			setExtendedState(newState);
-		}
-	}
-
 	ArrayList<DocumentView> documentStack = new ArrayList<>();
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
 	Settings settings = new Settings();
-
-	MySettingsListener mySettingsListener = new MySettingsListener();
 
 	DocumentSwitcher documentSwitcher = null;
 
@@ -87,13 +62,30 @@ public final class TextEditor extends javax.swing.JFrame {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
 	}
 
+	void initFromSettings() {
+
+		boolean wrapOn = settings.GetWordWrap();
+		jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
+
+		Rectangle bounds = settings.GetMainFormBounds();
+		setBounds(bounds);
+		int newState = 0;
+		if (settings.GetIsMaximizedHorizontal()) {
+			newState |= JFrame.MAXIMIZED_HORIZ;
+		}
+		if (settings.GetIsMaximizedVertical()) {
+			newState |= JFrame.MAXIMIZED_VERT;
+		}
+		setExtendedState(newState);
+	}
+
 	public TextEditor() {
 		initComponents();
+		initFromSettings();
 		initializeGlobalKeys();
 		FileNew();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
-		settings.AddListener(mySettingsListener);
 	}
 
 	void FileNew() {
@@ -493,7 +485,6 @@ public final class TextEditor extends javax.swing.JFrame {
     private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
 		WindowStateChanged(evt.getNewState());
     }//GEN-LAST:event_formWindowStateChanged
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;

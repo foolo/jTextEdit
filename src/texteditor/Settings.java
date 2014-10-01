@@ -17,7 +17,6 @@ public class Settings {
 
 		// Send all events
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
-		NotifyListeners(new SettingsEvent.GeometryEvent());
 		//...
 	}
 
