@@ -39,7 +39,9 @@ public final class TextEditor extends javax.swing.JFrame {
 		KeyEventDispatcher keyEventDispatcher = new KeyEventDispatcher() {
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
+
 				if (e.getID() == KeyEvent.KEY_RELEASED) {
+
 					if (e.getKeyCode() == KeyEvent.VK_TAB) {
 						if (e.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) {
 							PassCtrlTabToSwitcher(thisFrame, true);
@@ -48,6 +50,7 @@ public final class TextEditor extends javax.swing.JFrame {
 							PassCtrlTabToSwitcher(thisFrame, false);
 						}
 					}
+
 					else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
 						if (documentSwitcher != null) {
 							DocumentView selectedDocumentView = documentSwitcher.GetSelectedDocument();
@@ -55,6 +58,11 @@ public final class TextEditor extends javax.swing.JFrame {
 							jTabbedPane1.setSelectedComponent(selectedDocumentView);
 						}
 					}
+
+					else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						HandleEscapePressed();
+					}
+
 				}
 				return false;
 			}
@@ -186,8 +194,9 @@ public final class TextEditor extends javax.swing.JFrame {
 		}
 	}
 
-	public void HandleEscapePressed() {
+	void HandleEscapePressed() {
 		searchPanel1.setVisible(false);
+		CurrentDocumentView().ClearMarkings();
 	}
 
 	void FormBoundsChanged() {

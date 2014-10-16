@@ -1,6 +1,5 @@
 package texteditor;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -150,8 +149,7 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditor.HandleDocumentChanged(this);
 	}
 
-	void EscapePressed() {
-		textEditor.HandleEscapePressed();
+	void ClearMarkings() {
 		SearchEngine.markAll(textEditorPane1, new SearchContext());
 	}
 
@@ -269,12 +267,7 @@ public class DocumentView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEditorPane1KeyReleased
-		if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			EscapePressed();
-		}
-		else {
-			KeyReleased();
-		}
+		KeyReleased();
     }//GEN-LAST:event_textEditorPane1KeyReleased
 
 
