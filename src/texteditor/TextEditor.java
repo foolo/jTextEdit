@@ -91,15 +91,16 @@ public final class TextEditor extends javax.swing.JFrame {
 		initComponents();
 		initFromSettings();
 		initializeGlobalKeys();
-		FileNew();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
+		FileNew();
 	}
 
 	void FileNew() {
 		DocumentView document = new DocumentView(this, settings);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
+		HandleDocumentChanged(document);
 	}
 
 	void DoOpen(File f) {
@@ -186,9 +187,17 @@ public final class TextEditor extends javax.swing.JFrame {
 		searchPanel1.setVisible(true);
 	}
 
-	public void HandleDocumentChanged(DocumentView documentView) {
+	void SetTabAndWindowTitle(DocumentView documentView) {
 		int i = jTabbedPane1.indexOfComponent(documentView);
-		jTabbedPane1.setTitleAt(i, documentView.GetFilenameAlias());
+		String title = documentView.GetFilenameAlias();
+		if (i >= 0) {
+			jTabbedPane1.setTitleAt(i, title);
+		}
+		setTitle(title);
+	}
+
+	public void HandleDocumentChanged(DocumentView documentView) {
+		SetTabAndWindowTitle(documentView);
 		if (searchPanel1.isVisible()) {
 			searchPanel1.MarkAll();
 		}
@@ -216,10 +225,14 @@ public final class TextEditor extends javax.swing.JFrame {
 		if (documentStack.contains(newTab)) {
 			documentStack.remove(newTab);
 		}
+
 		// Null check needed here. It might be the last tab that is closed.
-		if (newTab != null) {
-			documentStack.add(0, newTab);
+		if (newTab == null) {
+			return;
 		}
+
+		documentStack.add(0, newTab);
+		SetTabAndWindowTitle(newTab);
 	}
 
 	void UpdateWordWrap() {
