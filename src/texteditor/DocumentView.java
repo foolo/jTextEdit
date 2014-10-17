@@ -245,6 +245,12 @@ public class DocumentView extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         textEditorPane1 = new org.fife.ui.rsyntaxtextarea.TextEditorPane();
 
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
+
         textEditorPane1.setColumns(20);
         textEditorPane1.setRows(5);
         textEditorPane1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -269,6 +275,10 @@ public class DocumentView extends javax.swing.JPanel {
     private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEditorPane1KeyReleased
 		KeyReleased();
     }//GEN-LAST:event_textEditorPane1KeyReleased
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+		textEditorPane1.requestFocus();
+    }//GEN-LAST:event_formComponentShown
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
