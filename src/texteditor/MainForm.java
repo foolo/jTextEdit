@@ -193,7 +193,7 @@ public final class MainForm extends javax.swing.JFrame {
 		if (i >= 0) {
 			jTabbedPane1.setTitleAt(i, title);
 		}
-		setTitle(title);
+		setTitle(title + " (" + documentView.GetEncoding() + ")");
 	}
 
 	public void HandleDocumentChanged(DocumentView documentView) {

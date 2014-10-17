@@ -97,10 +97,15 @@ public class DocumentView extends javax.swing.JPanel {
 		}
 	}
 
+	String GetEncoding() {
+		return textEditorPane1.getEncoding();
+	}
+
 	public void ReloadWithEncoding(String encoding) {
 		SetEncoding(encoding);
 		try {
 			textEditorPane1.reload();
+			textEditor.HandleDocumentChanged(this);
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
