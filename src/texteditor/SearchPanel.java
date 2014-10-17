@@ -10,9 +10,9 @@ public class SearchPanel extends javax.swing.JPanel {
 		initComponents();
 	}
 
-	TextEditor textEditor = null;
+	MainForm textEditor = null;
 
-	public void SetMainForm(TextEditor te) {
+	public void SetMainForm(MainForm te) {
 		textEditor = te;
 	}
 

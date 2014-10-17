@@ -28,10 +28,10 @@ public class DocumentView extends javax.swing.JPanel {
 
 	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
-	TextEditor textEditor;
+	MainForm textEditor;
 	Settings settings;
 
-	public DocumentView(TextEditor te, Settings s) {
+	public DocumentView(MainForm te, Settings s) {
 		initComponents();
 		settings = s;
 		textEditor = te;

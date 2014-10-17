@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public final class TextEditor extends javax.swing.JFrame {
+public final class MainForm extends javax.swing.JFrame {
 
 	ArrayList<DocumentView> documentStack = new ArrayList<>();
 
@@ -87,7 +87,7 @@ public final class TextEditor extends javax.swing.JFrame {
 		setExtendedState(newState);
 	}
 
-	public TextEditor() {
+	public MainForm() {
 		initComponents();
 		initFromSettings();
 		initializeGlobalKeys();

@@ -17,9 +17,9 @@ import org.apache.commons.codec.binary.Base64;
 
 public class Application {
 
-	static TextEditor textEditor = null;
+	static MainForm textEditor = null;
 
-	public static final Logger logger = Logger.getLogger(TextEditor.class.getName());
+	public static final Logger logger = Logger.getLogger(MainForm.class.getName());
 
 	static void SetLookAndFeel() {
 		try {
@@ -32,14 +32,14 @@ public class Application {
 			}
 		}
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-			Logger.getLogger(TextEditor.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	static void InitializeLogging() {
 
 		try {
-			File temp = File.createTempFile(TextEditor.class.getSimpleName(), ".log");
+			File temp = File.createTempFile(MainForm.class.getSimpleName(), ".log");
 			FileHandler fh = new FileHandler(temp.getAbsolutePath());
 			fh.setFormatter(new MyFormatter());
 			logger.setUseParentHandlers(false);
@@ -102,8 +102,8 @@ public class Application {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				if (CheckInstance(TextEditor.class.getName())) {
-					textEditor = new TextEditor();
+				if (CheckInstance(MainForm.class.getName())) {
+					textEditor = new MainForm();
 					textEditor.setVisible(true);
 					LoadIcons();
 					for (String filename : args) {
@@ -113,7 +113,7 @@ public class Application {
 				else {
 					for (String filename : args) {
 						String message = new String(Base64.encodeBase64(filename.getBytes()));
-						JUnique.sendMessage(TextEditor.class.getName(), message);
+						JUnique.sendMessage(MainForm.class.getName(), message);
 					}
 				}
 
