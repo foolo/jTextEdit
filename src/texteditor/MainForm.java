@@ -93,6 +93,7 @@ public final class MainForm extends javax.swing.JFrame {
 		initializeGlobalKeys();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
+		jFileChooser1.setMultiSelectionEnabled(true);
 		FileNew();
 	}
 
@@ -119,8 +120,7 @@ public final class MainForm extends javax.swing.JFrame {
 	void FileOpen() {
 		int returnVal = jFileChooser1.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File f = jFileChooser1.getSelectedFile();
-			if (f != null) {
+			for (File f : jFileChooser1.getSelectedFiles()) {
 				DoOpen(f);
 			}
 		}
