@@ -37,6 +37,8 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditor = te;
 		textEditorPane1.setAnimateBracketMatching(false);
 		settings.AddListener(mySettingsListener);
+		System.out.println(textEditorPane1.getDropTarget());
+		textEditorPane1.setDropTarget(null);
 	}
 
 	public boolean IsNewAndEmpty() {

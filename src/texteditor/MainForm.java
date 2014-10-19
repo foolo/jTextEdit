@@ -5,13 +5,19 @@ import java.awt.Frame;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
+import static javax.swing.TransferHandler.MOVE;
 
 public final class MainForm extends javax.swing.JFrame {
 
@@ -22,6 +28,8 @@ public final class MainForm extends javax.swing.JFrame {
 	Settings settings = new Settings();
 
 	DocumentSwitcher documentSwitcher = null;
+
+	private final TransferHandler handler;
 
 	private void PassCtrlTabToSwitcher(Frame frame, boolean forward) {
 		if (documentSwitcher == null) {
@@ -88,6 +96,37 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	public MainForm() {
+		this.handler = new TransferHandler() {
+			@Override
+			public boolean canImport(TransferHandler.TransferSupport support) {
+				if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+					return false;
+				}
+				if ((support.getSourceDropActions() & MOVE) != MOVE) {
+					return false;
+				}
+				support.setDropAction(MOVE);
+				return true;
+			}
+
+			@Override
+			public boolean importData(TransferHandler.TransferSupport support) {
+				if (!canImport(support)) {
+					return false;
+				}
+				Transferable t = support.getTransferable();
+				try {
+					java.util.List<File> files = (java.util.List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+					for (File file : files) {
+						DoOpen(file);
+					}
+				}
+				catch (UnsupportedFlavorException | IOException e) {
+					return false;
+				}
+				return true;
+			}
+		};
 		initComponents();
 		initFromSettings();
 		initializeGlobalKeys();
@@ -95,6 +134,7 @@ public final class MainForm extends javax.swing.JFrame {
 		searchPanel1.SetMainForm(this);
 		jFileChooser1.setMultiSelectionEnabled(true);
 		FileNew();
+		setTransferHandler(handler);
 	}
 
 	void FileNew() {
