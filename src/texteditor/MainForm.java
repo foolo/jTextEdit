@@ -118,7 +118,9 @@ public final class MainForm extends javax.swing.JFrame {
 				try {
 					java.util.List<File> files = (java.util.List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
 					for (File file : files) {
-						DoOpen(file);
+						if (!IsOpened(file)) {
+							DoOpen(file);
+						}
 					}
 				}
 				catch (UnsupportedFlavorException | IOException e) {
@@ -142,6 +144,15 @@ public final class MainForm extends javax.swing.JFrame {
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
 		HandleDocumentChanged(document);
+	}
+
+	boolean IsOpened(File file) {
+		for (Component c : jTabbedPane1.getComponents()) {
+			if (((DocumentView) c).IsLoaded(file)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void DoOpen(File f) {

@@ -119,6 +119,11 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditor.HandleDocumentChanged(this);
 	}
 
+	public boolean IsLoaded(File f) {
+		FileLocation fl = FileLocation.create(f);
+		return (fl.getFileFullPath().equals(textEditorPane1.getFileFullPath()));
+	}
+
 	public void LoadFile(File f) {
 		try {
 			String encoding = EncodingDetector.GetEncoding(f);
