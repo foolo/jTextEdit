@@ -35,6 +35,7 @@ public class DocumentView extends javax.swing.JPanel {
 		initComponents();
 		settings = s;
 		textEditor = te;
+		textEditorPane1.setEncoding("UTF-8");
 		textEditorPane1.setAnimateBracketMatching(false);
 		settings.AddListener(mySettingsListener);
 		System.out.println(textEditorPane1.getDropTarget());
