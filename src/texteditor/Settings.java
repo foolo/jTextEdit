@@ -2,6 +2,7 @@ package texteditor;
 
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 import util.Arithmetics;
@@ -34,6 +35,7 @@ public class Settings {
 	private static final String MAIN_BOUNDS_HEIGHT = "main_bounds_height";
 	private static final String IS_MAXIMIZED_H = "is_maximized_h";
 	private static final String IS_MAXIMIZED_V = "is_maximized_v";
+	private static final String OPEN_DIRECTORY = "open_directory";
 
 	void SetWordWrap(boolean wordWrap) {
 		prefs.putBoolean(WORD_WRAP, wordWrap);
@@ -86,6 +88,18 @@ public class Settings {
 
 	void SetIsMaximizedVertical(boolean isMaximized) {
 		prefs.putBoolean(IS_MAXIMIZED_V, isMaximized);
+	}
+
+	File GetOpenDirectory() {
+		String dir = prefs.get(OPEN_DIRECTORY, null);
+		if (dir == null) {
+			return null;
+		}
+		return new File(dir);
+	}
+
+	void SetOpenDirectory(File openDirectory) {
+		prefs.put(OPEN_DIRECTORY, openDirectory.toString());
 	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {

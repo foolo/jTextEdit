@@ -169,10 +169,12 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	void FileOpen() {
+		jFileChooser1.setCurrentDirectory(settings.GetOpenDirectory());
 		int returnVal = jFileChooser1.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			for (File f : jFileChooser1.getSelectedFiles()) {
 				DoOpen(f);
+				settings.SetOpenDirectory(jFileChooser1.getCurrentDirectory());
 			}
 		}
 	}
