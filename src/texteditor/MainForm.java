@@ -155,6 +155,16 @@ public final class MainForm extends javax.swing.JFrame {
 		return false;
 	}
 
+	public @Override
+	void toFront() {
+		int extendedState = super.getExtendedState() & ~JFrame.ICONIFIED;
+		super.setExtendedState(extendedState);
+		super.setAlwaysOnTop(true);
+		super.toFront();
+		super.requestFocus();
+		super.setAlwaysOnTop(false);
+	}
+
 	void DoOpen(File f) {
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView.IsNewAndEmpty()) {
@@ -166,6 +176,7 @@ public final class MainForm extends javax.swing.JFrame {
 			jTabbedPane1.setSelectedComponent(documentView);
 			documentView.LoadFile(f);
 		}
+		toFront();
 	}
 
 	void FileOpen() {
