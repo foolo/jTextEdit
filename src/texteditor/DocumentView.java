@@ -36,6 +36,7 @@ public class DocumentView extends javax.swing.JPanel {
 		settings = s;
 		textEditor = te;
 		textEditorPane1.setEncoding("UTF-8");
+		textEditorPane1.setDirty(false);
 		textEditorPane1.setAnimateBracketMatching(false);
 		settings.AddListener(mySettingsListener);
 		System.out.println(textEditorPane1.getDropTarget());
@@ -81,10 +82,6 @@ public class DocumentView extends javax.swing.JPanel {
 		String fileExt = FilenameUtils.getExtension(textEditorPane1.getFileName());
 		String syntaxMime = settings.GetSyntaxForFileExtension(fileExt);
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
-	}
-
-	void SetCharacterDecoding(String decoding) {
-		textEditorPane1.setEncoding(decoding);
 	}
 
 	public boolean CanBeReloaded() {
