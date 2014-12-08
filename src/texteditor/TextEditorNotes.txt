@@ -1,4 +1,7 @@
 
+add text "(latin1)" on ISO 8859-1
+show line number, show encoding
+
 # Features:
 - Drag and drop file to application
 - Close with scroll wheel click on tab
