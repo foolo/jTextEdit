@@ -1,4 +1,4 @@
-
+shift+home/end selection disappears
 add text "(latin1)" on ISO 8859-1
 show line number, show encoding
 
