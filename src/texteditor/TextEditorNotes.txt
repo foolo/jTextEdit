@@ -1,8 +1,12 @@
-shift+home/end selection disappears
-add text "(latin1)" on ISO 8859-1
-show line number, show encoding
+Bugs/problems:
+- Shift+home/end selection disappears
+- "Undo" after opening a file removes one word at a time backwards
+
 
 # Features:
 - Drag and drop file to application
 - Close with scroll wheel click on tab
 - In-program feature request
+- Enable to double-click on an encoding instead of clicking OK
+- Show line number
+- Show encoding
