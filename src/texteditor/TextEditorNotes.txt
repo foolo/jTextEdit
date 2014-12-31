@@ -1,7 +1,6 @@
 Bugs/problems:
 - Shift+home/end selection disappears
-- "Undo" after opening a file removes one word at a time backwards
-
+- Possible to open same file in many tabs
 
 # Features:
 - Drag and drop file to application

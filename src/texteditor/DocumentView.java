@@ -127,6 +127,7 @@ public class DocumentView extends javax.swing.JPanel {
 			String encoding = EncodingDetector.GetEncoding(f);
 			System.out.println("Detected encoding: " + encoding);
 			textEditorPane1.load(FileLocation.create(f), encoding);
+			textEditorPane1.discardAllEdits();
 			UpdateSyntaxEditingStyle();
 			m_untitled = false;
 		}
