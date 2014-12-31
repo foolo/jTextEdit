@@ -10,3 +10,4 @@ Bugs/problems:
 - Enable to double-click on an encoding instead of clicking OK
 - Show line number
 - Show encoding
+- Open recent files
