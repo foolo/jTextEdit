@@ -1,9 +1,8 @@
 Bugs/problems:
 - Shift+home/end selection disappears
+- If middle mouse button is clicked on the empty area beside the tabs, the current tab is closed anyway.
 
 # Features:
-- Drag and drop file to application
-- Close with scroll wheel click on tab
 - In-program feature request
 - Enable to double-click on an encoding instead of clicking OK
 - Show line number
