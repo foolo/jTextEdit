@@ -118,9 +118,7 @@ public final class MainForm extends javax.swing.JFrame {
 				try {
 					java.util.List<File> files = (java.util.List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
 					for (File file : files) {
-						if (!IsOpened(file)) {
-							DoOpen(file);
-						}
+						DoOpen(file);
 					}
 				}
 				catch (UnsupportedFlavorException | IOException e) {
@@ -146,15 +144,6 @@ public final class MainForm extends javax.swing.JFrame {
 		HandleDocumentChanged(document);
 	}
 
-	boolean IsOpened(File file) {
-		for (Component c : jTabbedPane1.getComponents()) {
-			if (((DocumentView) c).IsLoaded(file)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public @Override
 	void toFront() {
 		int extendedState = super.getExtendedState() & ~JFrame.ICONIFIED;
@@ -166,6 +155,13 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	void DoOpen(File f) {
+		for (Component c : jTabbedPane1.getComponents()) {
+			if (((DocumentView) c).IsLoaded(f)) {
+				jTabbedPane1.setSelectedComponent(c);
+				return;
+			}
+		}
+
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView.IsNewAndEmpty()) {
 			currentDocumentView.LoadFile(f);
