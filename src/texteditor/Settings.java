@@ -18,6 +18,7 @@ public class Settings {
 
 		// Send all events
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
+		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
 		//...
 	}
 
@@ -29,6 +30,7 @@ public class Settings {
 
 	////////////////////////////////////////////////////////////////////////
 	private static final String WORD_WRAP = "word_wrap";
+	private static final String SHOW_LINE_NUMBERS = "show_line_numbers";
 	private static final String MAIN_BOUNDS_X = "main_bounds_x";
 	private static final String MAIN_BOUNDS_Y = "main_bounds_y";
 	private static final String MAIN_BOUNDS_WIDTH = "main_bounds_width";
@@ -42,8 +44,17 @@ public class Settings {
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
 	}
 
+	void SetShowLineNumbers(boolean showLineNumbers) {
+		prefs.putBoolean(SHOW_LINE_NUMBERS, showLineNumbers);
+		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
+	}
+
 	boolean GetWordWrap() {
 		return prefs.getBoolean(WORD_WRAP, false);
+	}
+
+	boolean GetShowLineNumbers() {
+		return prefs.getBoolean(SHOW_LINE_NUMBERS, false);
 	}
 
 	void SetMainFormBounds(Rectangle bounds) {

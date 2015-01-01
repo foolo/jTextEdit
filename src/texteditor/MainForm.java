@@ -83,6 +83,9 @@ public final class MainForm extends javax.swing.JFrame {
 		boolean wrapOn = settings.GetWordWrap();
 		jCheckBoxMenuItemWordWrap.setSelected(wrapOn);
 
+		boolean showLineNumbers = settings.GetShowLineNumbers();
+		jCheckBoxMenuItemShowLineNumbers.setSelected(showLineNumbers);
+
 		Rectangle bounds = settings.GetMainFormBounds();
 		setBounds(bounds);
 		int newState = 0;
@@ -307,6 +310,10 @@ public final class MainForm extends javax.swing.JFrame {
 		settings.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
 
+	void UpdateShowLineNumbers() {
+		settings.SetShowLineNumbers(jCheckBoxMenuItemShowLineNumbers.isSelected());
+	}
+
 	void ReloadWithDifferentEncoding() {
 		DocumentView documentView = CurrentDocumentView();
 		if (documentView.CanBeReloaded()) {
@@ -348,6 +355,7 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxMenuItemWordWrap = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemShowLineNumbers = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
         jMenuDocument = new javax.swing.JMenu();
@@ -451,6 +459,15 @@ public final class MainForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jCheckBoxMenuItemWordWrap);
+
+        jCheckBoxMenuItemShowLineNumbers.setSelected(true);
+        jCheckBoxMenuItemShowLineNumbers.setText("Show line numbers");
+        jCheckBoxMenuItemShowLineNumbers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItemShowLineNumbersActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jCheckBoxMenuItemShowLineNumbers);
 
         jMenuBar1.add(jMenu1);
 
@@ -576,7 +593,12 @@ public final class MainForm extends javax.swing.JFrame {
 		WindowStateChanged(evt.getNewState());
     }//GEN-LAST:event_formWindowStateChanged
 
+    private void jCheckBoxMenuItemShowLineNumbersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemShowLineNumbersActionPerformed
+		UpdateShowLineNumbers();
+    }//GEN-LAST:event_jCheckBoxMenuItemShowLineNumbersActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;

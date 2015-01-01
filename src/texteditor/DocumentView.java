@@ -23,6 +23,13 @@ public class DocumentView extends javax.swing.JPanel {
 			boolean wrapOn = settings.GetWordWrap();
 			textEditorPane1.setLineWrap(wrapOn);
 		}
+
+		@Override
+		void ShowLineNumbersChanged() {
+			boolean showLineNumbers = settings.GetShowLineNumbers();
+			System.out.println("what" + showLineNumbers);
+			rTextScrollPane1.setLineNumbersEnabled(showLineNumbers);
+		}
 	}
 
 	private org.fife.ui.rsyntaxtextarea.TextEditorPane textEditorPane1;
