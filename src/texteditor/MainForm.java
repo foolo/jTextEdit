@@ -249,11 +249,19 @@ public final class MainForm extends javax.swing.JFrame {
 
 	void SetTabAndWindowTitle(DocumentView documentView) {
 		int i = jTabbedPane1.indexOfComponent(documentView);
-		String title = documentView.GetFilenameAlias();
+		String filenameAlias = documentView.GetFilenameAlias();
 		if (i >= 0) {
-			jTabbedPane1.setTitleAt(i, title);
+			jTabbedPane1.setTitleAt(i, filenameAlias);
 		}
-		setTitle(title + " (" + documentView.GetEncoding() + ")");
+
+		String fileDir = documentView.GetFileDirectory();
+		String windowTitle = filenameAlias;
+		if (!documentView.IsUntitled()) {
+			windowTitle += " (" + fileDir + ")";
+		}
+		windowTitle += " (" + documentView.GetEncoding() + ")";
+
+		setTitle(windowTitle);
 	}
 
 	public void HandleDocumentChanged(DocumentView documentView) {

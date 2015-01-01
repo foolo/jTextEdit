@@ -44,6 +44,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	public boolean IsNewAndEmpty() {
+		//TODO, why is not m_untitled used here instead of !isLocalAndExists?
 		boolean remoteOrNonExisting = !textEditorPane1.isLocalAndExists();
 		return remoteOrNonExisting && !textEditorPane1.isDirty() && textEditorPane1.getText().isEmpty();
 	}
@@ -146,9 +147,17 @@ public class DocumentView extends javax.swing.JPanel {
 			alias = textEditorPane1.getFileName();
 		}
 		if (textEditorPane1.isDirty()) {
-			alias = alias + " (*)";
+			alias = "*" + alias;
 		}
 		return alias;
+	}
+
+	boolean IsUntitled() {
+		return m_untitled;
+	}
+
+	String GetFileDirectory() {
+		return FilenameUtils.getFullPathNoEndSeparator(textEditorPane1.getFileFullPath());
 	}
 
 	@Override

@@ -6,6 +6,5 @@ Bugs/problems:
 - In-program feature request
 - Show line number
 - Show encoding
-- Show file path (for example in parenthesis after the filename as in gedit)
 - Open recent files
 - Instead of showing "Can not reload new file", the menu option "Reload file with different encoding..." should be disabled.
