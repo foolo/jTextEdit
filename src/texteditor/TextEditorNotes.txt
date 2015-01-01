@@ -4,6 +4,6 @@ Bugs/problems:
 
 # Features:
 - In-program feature request
-- Show line number
 - Open recent files
 - Instead of showing "Can not reload new file", the menu option "Reload file with different encoding..." should be disabled.
+- Possibility to show/hide line numbers

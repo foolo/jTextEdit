@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
+import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -24,6 +25,8 @@ public class DocumentView extends javax.swing.JPanel {
 		}
 	}
 
+	private org.fife.ui.rsyntaxtextarea.TextEditorPane textEditorPane1;
+
 	MySettingsListener mySettingsListener = new MySettingsListener();
 
 	boolean m_untitled = true;
@@ -32,6 +35,7 @@ public class DocumentView extends javax.swing.JPanel {
 	Settings settings;
 
 	public DocumentView(MainForm te, Settings s) {
+		initTextEditorPane();
 		initComponents();
 		settings = s;
 		textEditor = te;
@@ -260,8 +264,7 @@ public class DocumentView extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        textEditorPane1 = new org.fife.ui.rsyntaxtextarea.TextEditorPane();
+        rTextScrollPane1 = new org.fife.ui.rtextarea.RTextScrollPane(textEditorPane1);
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -269,39 +272,37 @@ public class DocumentView extends javax.swing.JPanel {
             }
         });
 
-        textEditorPane1.setColumns(20);
-        textEditorPane1.setRows(5);
-        textEditorPane1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                textEditorPane1KeyReleased(evt);
-            }
-        });
-        jScrollPane2.setViewportView(textEditorPane1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(rTextScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEditorPane1KeyReleased
+	private void initTextEditorPane() {
+		textEditorPane1 = new TextEditorPane();
+		textEditorPane1.addKeyListener(new java.awt.event.KeyAdapter() {
+			@Override
+			public void keyReleased(java.awt.event.KeyEvent evt) {
+				textEditorPane1KeyReleased(evt);
+			}
+		});
+	}
+
+	private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {
 		KeyReleased();
-    }//GEN-LAST:event_textEditorPane1KeyReleased
+	}
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
 		textEditorPane1.requestFocus();
     }//GEN-LAST:event_formComponentShown
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane2;
-    private org.fife.ui.rsyntaxtextarea.TextEditorPane textEditorPane1;
+    private org.fife.ui.rtextarea.RTextScrollPane rTextScrollPane1;
     // End of variables declaration//GEN-END:variables
-
 }
