@@ -43,10 +43,8 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditorPane1.setDropTarget(null);
 	}
 
-	public boolean IsNewAndEmpty() {
-		//TODO, why is not m_untitled used here instead of !isLocalAndExists?
-		boolean remoteOrNonExisting = !textEditorPane1.isLocalAndExists();
-		return remoteOrNonExisting && !textEditorPane1.isDirty() && textEditorPane1.getText().isEmpty();
+	public boolean OkToReplace() {
+		return m_untitled && !textEditorPane1.isDirty() && textEditorPane1.getText().isEmpty();
 	}
 
 	public void Find(SearchContext context) {

@@ -163,7 +163,7 @@ public final class MainForm extends javax.swing.JFrame {
 		}
 
 		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView.IsNewAndEmpty()) {
+		if (currentDocumentView.OkToReplace()) {
 			currentDocumentView.LoadFile(f);
 		}
 		else {
