@@ -4,8 +4,8 @@ Bugs/problems:
 
 # Features:
 - In-program feature request
-- Enable to double-click on an encoding instead of clicking OK
 - Show line number
 - Show encoding
 - Show file path (for example in parenthesis after the filename as in gedit)
 - Open recent files
+- Instead of showing "Can not reload new file", the menu option "Reload file with different encoding..." should be disabled.

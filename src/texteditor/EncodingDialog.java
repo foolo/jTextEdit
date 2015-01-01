@@ -1,12 +1,16 @@
 package texteditor;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 public class EncodingDialog extends javax.swing.JDialog {
 
 	String selectedEncoding = null;
-	
+
 	public EncodingDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
@@ -14,12 +18,40 @@ public class EncodingDialog extends javax.swing.JDialog {
 		for (int i = 0; i < jTree1.getRowCount(); i++) {
 			jTree1.expandRow(i);
 		}
+
+		InitDoubleClick();
+	}
+
+	final void InitDoubleClick() {
+		MouseListener ml = new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				int selRow = jTree1.getRowForLocation(e.getX(), e.getY());
+				if (selRow != -1) {
+					if (e.getClickCount() == 2) {
+						Ok();
+					}
+				}
+			}
+		};
+		jTree1.addMouseListener(ml);
 	}
 
 	String GetEncoding() {
 		return selectedEncoding;
 	}
-	
+
+	void Ok() {
+		Object selection = jTree1.getLastSelectedPathComponent();
+		if (selection != null) {
+			selectedEncoding = selection.toString().split(",")[0];
+			dispose();
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "No encoding selected");
+		}
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -237,18 +269,11 @@ public class EncodingDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
-        Object selection = jTree1.getLastSelectedPathComponent();
-		if (selection != null) {
-			selectedEncoding = selection.toString().split(",")[0];
-			dispose();
-		}
-		else {
-			JOptionPane.showMessageDialog(this, "No encoding selected");
-		}
+		Ok();
     }//GEN-LAST:event_jButtonOkActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
-        selectedEncoding = null;
+		selectedEncoding = null;
 		dispose();
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
