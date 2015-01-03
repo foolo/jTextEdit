@@ -15,12 +15,6 @@ public class Settings {
 
 	void AddListener(SettingsListener settingsListener) {
 		listeners.add(settingsListener);
-
-		// Send all events
-		NotifyListeners(new SettingsEvent.WordWrapEvent());
-		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
-		NotifyListeners(new SettingsEvent.RecentFilesChangedEvent());
-		//...
 	}
 
 	private void NotifyListeners(SettingsEvent event) {

@@ -49,6 +49,7 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditorPane1.setDirty(false);
 		textEditorPane1.setAnimateBracketMatching(false);
 		settings.AddListener(mySettingsListener);
+		mySettingsListener.CallAll();
 		System.out.println(textEditorPane1.getDropTarget());
 		textEditorPane1.setDropTarget(null);
 	}

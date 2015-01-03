@@ -144,6 +144,7 @@ public final class MainForm extends javax.swing.JFrame {
 		initComponents();
 		initFromSettings();
 		settings.AddListener(mySettingsListener);
+		mySettingsListener.CallAll();
 		initializeGlobalKeys();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
@@ -328,7 +329,7 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	void TabChanged() {
-		DocumentView newTab = CurrentDocumentView();
+		DocumentView newTab = CurrentDocumentView();  // TODO investigate this. A new DocumentView is created when the form is closed. really needed?
 		if (documentStack.contains(newTab)) {
 			documentStack.remove(newTab);
 		}
