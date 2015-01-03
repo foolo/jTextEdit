@@ -76,9 +76,9 @@ public class TabHandler extends javax.swing.JPanel {
 			documentView.LoadFile(f);
 		}
 
-		RecentFilesCollection recentFiles = settings.GetRecentFiles();
+		RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
 		recentFiles.AddFile(f);
-		settings.SetRecentFiles(recentFiles);
+		settings.SetRecentFilesCollection(recentFiles);
 
 		mainForm.toFront();
 	}

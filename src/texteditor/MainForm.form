@@ -35,6 +35,16 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Open recent"/>
               </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItemClearRecent">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Clear recent files"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemClearRecentActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
             </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemClose">
               <Properties>

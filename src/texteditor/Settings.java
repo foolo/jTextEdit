@@ -35,7 +35,7 @@ public class Settings {
 	private static final String OPEN_DIRECTORY = "open_directory";
 	private static final String RECENT_FILES = "recent_files";
 
-	void SetRecentFiles(RecentFilesCollection recentFiles) {
+	void SetRecentFilesCollection(RecentFilesCollection recentFiles) {
 		prefs.putByteArray(RECENT_FILES, recentFiles.toByteArray());
 		NotifyListeners(new SettingsEvent.RecentFilesChangedEvent());
 	}
@@ -50,7 +50,7 @@ public class Settings {
 		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
 	}
 
-	RecentFilesCollection GetRecentFiles() {
+	RecentFilesCollection GetRecentFilesCollection() {
 		byte[] b = prefs.getByteArray(RECENT_FILES, new byte[]{});
 		return new RecentFilesCollection(b);
 	}

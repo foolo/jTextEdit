@@ -49,6 +49,10 @@ public class RecentFilesCollection {
 		}
 	}
 
+	public void Clear() {
+		m_recentFiles.clear();
+	}
+
 	public byte[] toByteArray() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos;

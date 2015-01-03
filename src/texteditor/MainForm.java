@@ -153,9 +153,10 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	void UpdateOpenRecentMenu() {
-		RecentFilesCollection rfc = settings.GetRecentFiles();
+		RecentFilesCollection rfc = settings.GetRecentFilesCollection();
 		ArrayList<String> recentFiles = rfc.GetRecentFiles();
 		jMenuOpenRecent.removeAll();
+
 		ListIterator li = recentFiles.listIterator(recentFiles.size());
 		while (li.hasPrevious()) {
 			String filename = (String) li.previous();
@@ -168,6 +169,8 @@ public final class MainForm extends javax.swing.JFrame {
 				}
 			});
 		}
+		jMenuOpenRecent.addSeparator();
+		jMenuOpenRecent.add(jMenuItemClearRecent);
 	}
 
 	public @Override
@@ -248,6 +251,7 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuItemNew = new javax.swing.JMenuItem();
         jMenuItemOpen = new javax.swing.JMenuItem();
         jMenuOpenRecent = new javax.swing.JMenu();
+        jMenuItemClearRecent = new javax.swing.JMenuItem();
         jMenuItemClose = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemSaveAs = new javax.swing.JMenuItem();
@@ -302,6 +306,15 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuFile.add(jMenuItemOpen);
 
         jMenuOpenRecent.setText("Open recent");
+
+        jMenuItemClearRecent.setText("Clear recent files");
+        jMenuItemClearRecent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemClearRecentActionPerformed(evt);
+            }
+        });
+        jMenuOpenRecent.add(jMenuItemClearRecent);
+
         jMenuFile.add(jMenuOpenRecent);
 
         jMenuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
@@ -478,6 +491,12 @@ public final class MainForm extends javax.swing.JFrame {
 		UpdateShowLineNumbers();
     }//GEN-LAST:event_jCheckBoxMenuItemShowLineNumbersActionPerformed
 
+    private void jMenuItemClearRecentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClearRecentActionPerformed
+		RecentFilesCollection rfc = settings.GetRecentFilesCollection();
+		rfc.Clear();
+		settings.SetRecentFilesCollection(rfc);
+    }//GEN-LAST:event_jMenuItemClearRecentActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
@@ -486,6 +505,7 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuItemChangeEncoding;
+    private javax.swing.JMenuItem jMenuItemClearRecent;
     private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFind;
