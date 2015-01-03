@@ -4,5 +4,4 @@ Bugs/problems:
 
 # Features:
 - In-program feature request
-- Open recent files
 - Instead of showing "Can not reload new file", the menu option "Reload file with different encoding..." should be disabled.

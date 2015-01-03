@@ -126,6 +126,8 @@ public class Settings {
 			case "cpp":
 			case "c++":
 			case "cc":
+			case "h":
+			case "hpp":
 				return "text/cpp";
 			case "cs":
 				return "text/cs";
