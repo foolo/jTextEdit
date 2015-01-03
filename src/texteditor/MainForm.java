@@ -12,8 +12,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -98,6 +100,15 @@ public final class MainForm extends javax.swing.JFrame {
 		setExtendedState(newState);
 	}
 
+	private class MySettingsListener extends SettingsListener {
+
+		@Override
+		void RecentFilesChanged() {
+			UpdateOpenRecentMenu();
+		}
+	}
+	MySettingsListener mySettingsListener = new MySettingsListener();
+
 	public MainForm() {
 		this.handler = new TransferHandler() {
 			@Override
@@ -132,12 +143,32 @@ public final class MainForm extends javax.swing.JFrame {
 		};
 		initComponents();
 		initFromSettings();
+		settings.AddListener(mySettingsListener);
 		initializeGlobalKeys();
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
 		jFileChooser1.setMultiSelectionEnabled(true);
 		FileNew();
 		setTransferHandler(handler);
+	}
+
+	void UpdateOpenRecentMenu() {
+		RecentFilesCollection rfc = settings.GetRecentFiles();
+		ArrayList<String> recentFiles = rfc.GetRecentFiles();
+		jMenuOpenRecent.removeAll();
+		ListIterator li = recentFiles.listIterator(recentFiles.size());
+		while (li.hasPrevious()) {
+			String filename = (String) li.previous();
+			final JMenuItem item = new JMenuItem(filename);
+			jMenuOpenRecent.add(item);
+			item.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					DoOpen(new File(item.getText()));
+				}
+			});
+
+		}
 	}
 
 	void FileNew() {
@@ -175,6 +206,11 @@ public final class MainForm extends javax.swing.JFrame {
 			jTabbedPane1.setSelectedComponent(documentView);
 			documentView.LoadFile(f);
 		}
+
+		RecentFilesCollection recentFiles = settings.GetRecentFiles();
+		recentFiles.AddFile(f);
+		settings.SetRecentFiles(recentFiles);
+
 		toFront();
 	}
 
@@ -349,11 +385,12 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuFile = new javax.swing.JMenu();
         jMenuItemNew = new javax.swing.JMenuItem();
         jMenuItemOpen = new javax.swing.JMenuItem();
+        jMenuOpenRecent = new javax.swing.JMenu();
         jMenuItemClose = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemSaveAs = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        jMenuView = new javax.swing.JMenu();
         jCheckBoxMenuItemWordWrap = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemShowLineNumbers = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
@@ -413,6 +450,9 @@ public final class MainForm extends javax.swing.JFrame {
         });
         jMenuFile.add(jMenuItemOpen);
 
+        jMenuOpenRecent.setText("Open recent");
+        jMenuFile.add(jMenuOpenRecent);
+
         jMenuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemClose.setText("Close");
         jMenuItemClose.addActionListener(new java.awt.event.ActionListener() {
@@ -449,7 +489,7 @@ public final class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenuFile);
 
-        jMenu1.setText("View");
+        jMenuView.setText("View");
 
         jCheckBoxMenuItemWordWrap.setSelected(true);
         jCheckBoxMenuItemWordWrap.setText("Word wrap");
@@ -458,7 +498,7 @@ public final class MainForm extends javax.swing.JFrame {
                 jCheckBoxMenuItemWordWrapActionPerformed(evt);
             }
         });
-        jMenu1.add(jCheckBoxMenuItemWordWrap);
+        jMenuView.add(jCheckBoxMenuItemWordWrap);
 
         jCheckBoxMenuItemShowLineNumbers.setSelected(true);
         jCheckBoxMenuItemShowLineNumbers.setText("Show line numbers");
@@ -467,9 +507,9 @@ public final class MainForm extends javax.swing.JFrame {
                 jCheckBoxMenuItemShowLineNumbersActionPerformed(evt);
             }
         });
-        jMenu1.add(jCheckBoxMenuItemShowLineNumbers);
+        jMenuView.add(jCheckBoxMenuItemShowLineNumbers);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jMenuView);
 
         jMenuEdit.setText("Edit");
 
@@ -600,7 +640,6 @@ public final class MainForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuDocument;
     private javax.swing.JMenu jMenuEdit;
@@ -614,6 +653,8 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemReloadWithEncoding;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemSaveAs;
+    private javax.swing.JMenu jMenuOpenRecent;
+    private javax.swing.JMenu jMenuView;
     private javax.swing.JTabbedPane jTabbedPane1;
     private texteditor.SearchPanel searchPanel1;
     // End of variables declaration//GEN-END:variables

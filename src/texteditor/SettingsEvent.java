@@ -19,4 +19,12 @@ public interface SettingsEvent {
 			settingsListener.ShowLineNumbersChanged();
 		}
 	}
+
+	public class RecentFilesChangedEvent implements SettingsEvent {
+
+		@Override
+		public void notify(SettingsListener settingsListener) {
+			settingsListener.RecentFilesChanged();
+		}
+	}
 }

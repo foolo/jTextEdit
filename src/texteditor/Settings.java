@@ -19,6 +19,7 @@ public class Settings {
 		// Send all events
 		NotifyListeners(new SettingsEvent.WordWrapEvent());
 		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
+		NotifyListeners(new SettingsEvent.RecentFilesChangedEvent());
 		//...
 	}
 
@@ -38,6 +39,12 @@ public class Settings {
 	private static final String IS_MAXIMIZED_H = "is_maximized_h";
 	private static final String IS_MAXIMIZED_V = "is_maximized_v";
 	private static final String OPEN_DIRECTORY = "open_directory";
+	private static final String RECENT_FILES = "recent_files";
+
+	void SetRecentFiles(RecentFilesCollection recentFiles) {
+		prefs.putByteArray(RECENT_FILES, recentFiles.toByteArray());
+		NotifyListeners(new SettingsEvent.RecentFilesChangedEvent());
+	}
 
 	void SetWordWrap(boolean wordWrap) {
 		prefs.putBoolean(WORD_WRAP, wordWrap);
@@ -47,6 +54,11 @@ public class Settings {
 	void SetShowLineNumbers(boolean showLineNumbers) {
 		prefs.putBoolean(SHOW_LINE_NUMBERS, showLineNumbers);
 		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
+	}
+
+	RecentFilesCollection GetRecentFiles() {
+		byte[] b = prefs.getByteArray(RECENT_FILES, new byte[]{});
+		return new RecentFilesCollection(b);
 	}
 
 	boolean GetWordWrap() {

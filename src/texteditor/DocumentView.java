@@ -27,7 +27,6 @@ public class DocumentView extends javax.swing.JPanel {
 		@Override
 		void ShowLineNumbersChanged() {
 			boolean showLineNumbers = settings.GetShowLineNumbers();
-			System.out.println("what" + showLineNumbers);
 			rTextScrollPane1.setLineNumbersEnabled(showLineNumbers);
 		}
 	}

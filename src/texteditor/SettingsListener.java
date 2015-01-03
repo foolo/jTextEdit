@@ -7,4 +7,7 @@ public abstract class SettingsListener {
 
 	void ShowLineNumbersChanged() {
 	}
+
+	void RecentFilesChanged() {
+	}
 }
