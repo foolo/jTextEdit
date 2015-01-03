@@ -37,14 +37,14 @@ public class DocumentView extends javax.swing.JPanel {
 
 	boolean m_untitled = true;
 	final JFileChooser jFileChooser1 = new JFileChooser();
-	MainForm textEditor;
+	TabHandler tabHandler;
 	Settings settings;
 
-	public DocumentView(MainForm te, Settings s) {
+	public DocumentView(TabHandler th, Settings s) {
 		initTextEditorPane();
 		initComponents();
 		settings = s;
-		textEditor = te;
+		tabHandler = th;
 		textEditorPane1.setEncoding("UTF-8");
 		textEditorPane1.setDirty(false);
 		textEditorPane1.setAnimateBracketMatching(false);
@@ -115,7 +115,7 @@ public class DocumentView extends javax.swing.JPanel {
 		SetEncoding(encoding);
 		try {
 			textEditorPane1.reload();
-			textEditor.HandleDocumentChanged(this);
+			tabHandler.HandleDocumentChanged(this);
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,7 +124,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 	public void ChangeEncoding(String encoding) {
 		SetEncoding(encoding);
-		textEditor.HandleDocumentChanged(this);
+		tabHandler.HandleDocumentChanged(this);
 	}
 
 	public boolean IsLoaded(File f) {
@@ -144,7 +144,7 @@ public class DocumentView extends javax.swing.JPanel {
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		textEditor.HandleDocumentChanged(this);
+		tabHandler.HandleDocumentChanged(this);
 	}
 
 	String GetFilenameAlias() {
@@ -175,7 +175,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	void KeyReleased() {
-		textEditor.HandleDocumentChanged(this);
+		tabHandler.HandleDocumentChanged(this);
 	}
 
 	void ClearMarkings() {
@@ -193,7 +193,7 @@ public class DocumentView extends javax.swing.JPanel {
 			catch (IOException ex) {
 				JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
 			}
-			textEditor.HandleDocumentChanged(this);
+			tabHandler.HandleDocumentChanged(this);
 			m_untitled = false;
 			return true;
 		}
@@ -204,7 +204,7 @@ public class DocumentView extends javax.swing.JPanel {
 		if (selectedFile != null) {
 			try {
 				textEditorPane1.saveAs(FileLocation.create(selectedFile));
-				textEditor.HandleDocumentChanged(this);
+				tabHandler.HandleDocumentChanged(this);
 				UpdateSyntaxEditingStyle();
 				m_untitled = false;
 			}

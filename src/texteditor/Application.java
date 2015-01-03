@@ -58,7 +58,7 @@ public class Application {
 					if (textEditor != null) {
 						byte[] filenameBytes = Base64.decodeBase64(message);
 						String filename = new String(filenameBytes);
-						textEditor.DoOpen(new File(filename));
+						textEditor.Open(new File(filename));
 						textEditor.toFront();
 					}
 					return null;
@@ -107,7 +107,7 @@ public class Application {
 					textEditor.setVisible(true);
 					LoadIcons();
 					for (String filename : args) {
-						textEditor.DoOpen(new File(filename));
+						textEditor.Open(new File(filename));
 					}
 				}
 				else {

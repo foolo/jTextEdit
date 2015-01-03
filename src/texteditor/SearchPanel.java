@@ -6,8 +6,15 @@ public class SearchPanel extends javax.swing.JPanel {
 
 	SearchContext searchContext = new SearchContext();
 
+	TabHandler tabHandler;
+
 	public SearchPanel() {
 		initComponents();
+	}
+
+	public SearchPanel(TabHandler th) {
+		initComponents();
+		tabHandler = th;
 	}
 
 	MainForm textEditor = null;
@@ -28,19 +35,19 @@ public class SearchPanel extends javax.swing.JPanel {
 	}
 
 	void Find() {
-		textEditor.CurrentDocumentView().Find(searchContext);
+		tabHandler.CurrentDocumentView().Find(searchContext);
 	}
 
 	void Replace() {
-		textEditor.CurrentDocumentView().Replace(searchContext);
+		tabHandler.CurrentDocumentView().Replace(searchContext);
 	}
 
 	void ReplaceAll() {
-		textEditor.CurrentDocumentView().ReplaceAll(searchContext);
+		tabHandler.CurrentDocumentView().ReplaceAll(searchContext);
 	}
 
 	void MarkAll() {
-		textEditor.CurrentDocumentView().MarkAll(searchContext);
+		tabHandler.CurrentDocumentView().MarkAll(searchContext);
 	}
 
 	@Override

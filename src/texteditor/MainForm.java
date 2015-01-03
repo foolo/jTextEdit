@@ -1,6 +1,5 @@
 package texteditor;
 
-import java.awt.Component;
 import java.awt.Frame;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -16,14 +15,10 @@ import java.util.ListIterator;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 
 public final class MainForm extends javax.swing.JFrame {
-
-	ArrayList<DocumentView> documentStack = new ArrayList<>();
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
@@ -35,7 +30,7 @@ public final class MainForm extends javax.swing.JFrame {
 
 	private void PassCtrlTabToSwitcher(Frame frame, boolean forward) {
 		if (documentSwitcher == null) {
-			documentSwitcher = new DocumentSwitcher(frame, forward, documentStack);
+			documentSwitcher = new DocumentSwitcher(frame, forward, tabHandler.GetDocumentStack());
 			documentSwitcher.setVisible(true);
 			documentSwitcher = null;
 		}
@@ -65,7 +60,7 @@ public final class MainForm extends javax.swing.JFrame {
 						if (documentSwitcher != null) {
 							DocumentView selectedDocumentView = documentSwitcher.GetSelectedDocument();
 							documentSwitcher.dispose();
-							jTabbedPane1.setSelectedComponent(selectedDocumentView);
+							tabHandler.SetSelected(selectedDocumentView);
 						}
 					}
 
@@ -132,7 +127,7 @@ public final class MainForm extends javax.swing.JFrame {
 				try {
 					java.util.List<File> files = (java.util.List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
 					for (File file : files) {
-						DoOpen(file);
+						tabHandler.DoOpen(file);
 					}
 				}
 				catch (UnsupportedFlavorException | IOException e) {
@@ -149,8 +144,12 @@ public final class MainForm extends javax.swing.JFrame {
 		searchPanel1.setVisible(false);
 		searchPanel1.SetMainForm(this);
 		jFileChooser1.setMultiSelectionEnabled(true);
-		FileNew();
+		tabHandler.New();
 		setTransferHandler(handler);
+	}
+
+	void Open(File f) {
+		tabHandler.DoOpen(f);
 	}
 
 	void UpdateOpenRecentMenu() {
@@ -165,18 +164,10 @@ public final class MainForm extends javax.swing.JFrame {
 			item.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					DoOpen(new File(item.getText()));
+					tabHandler.DoOpen(new File(item.getText()));
 				}
 			});
-
 		}
-	}
-
-	void FileNew() {
-		DocumentView document = new DocumentView(this, settings);
-		jTabbedPane1.add(document, document.GetFilenameAlias());
-		jTabbedPane1.setSelectedComponent(document);
-		HandleDocumentChanged(document);
 	}
 
 	public @Override
@@ -189,97 +180,25 @@ public final class MainForm extends javax.swing.JFrame {
 		super.setAlwaysOnTop(false);
 	}
 
-	void DoOpen(File f) {
-		for (Component c : jTabbedPane1.getComponents()) {
-			if (((DocumentView) c).IsLoaded(f)) {
-				jTabbedPane1.setSelectedComponent(c);
-				return;
-			}
-		}
-
-		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView.OkToReplace()) {
-			currentDocumentView.LoadFile(f);
-		}
-		else {
-			DocumentView documentView = new DocumentView(this, settings);
-			jTabbedPane1.add(documentView);
-			jTabbedPane1.setSelectedComponent(documentView);
-			documentView.LoadFile(f);
-		}
-
-		RecentFilesCollection recentFiles = settings.GetRecentFiles();
-		recentFiles.AddFile(f);
-		settings.SetRecentFiles(recentFiles);
-
-		toFront();
-	}
-
 	void FileOpen() {
 		jFileChooser1.setCurrentDirectory(settings.GetOpenDirectory());
 		int returnVal = jFileChooser1.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			for (File f : jFileChooser1.getSelectedFiles()) {
-				DoOpen(f);
-				settings.SetOpenDirectory(jFileChooser1.getCurrentDirectory());
+				tabHandler.DoOpen(f);
 			}
-		}
-	}
-
-	boolean FileClose() {
-		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView.HandleCurrentFile()) {
-			documentStack.remove(currentDocumentView);
-			ArrayList<DocumentView> documentStackBackup = new ArrayList<>(documentStack);
-			jTabbedPane1.remove(currentDocumentView); // Will trigger TabChanged, which will affect documentStack
-			documentStack = documentStackBackup;
-
-			if (!documentStack.isEmpty()) {
-				jTabbedPane1.setSelectedComponent(documentStack.get(0));
-			}
-
-			if (jTabbedPane1.getTabCount() == 0) {
-				DoExit();
-			}
-			return true;
-		}
-		return false;
-	}
-
-	DocumentView CurrentDocumentView() {
-		Component c = jTabbedPane1.getSelectedComponent();
-		if (c != null) {
-			return ((DocumentView) c);
-		}
-		else {
-			return new DocumentView(this, settings);
-		}
-	}
-
-	void FileSave() {
-		CurrentDocumentView().SaveDoc();
-	}
-
-	void FileSaveAs() {
-		CurrentDocumentView().FileSaveAs();
-	}
-
-	void CloseAllTabs() {
-		while (jTabbedPane1.getTabCount() > 0) {
-			if (FileClose() == false) {
-				return;
-			}
+			settings.SetOpenDirectory(jFileChooser1.getCurrentDirectory());
 		}
 	}
 
 	void DoExit() {
-		if (jTabbedPane1.getTabCount() == 0) {
+		if (tabHandler.GetTabCount() == 0) {
 			dispose();
 		}
 	}
 
 	void FileExit() {
-		CloseAllTabs();
+		tabHandler.CloseAllTabs();
 		DoExit();
 	}
 
@@ -287,25 +206,7 @@ public final class MainForm extends javax.swing.JFrame {
 		searchPanel1.setVisible(true);
 	}
 
-	void SetTabAndWindowTitle(DocumentView documentView) {
-		int i = jTabbedPane1.indexOfComponent(documentView);
-		String filenameAlias = documentView.GetFilenameAlias();
-		if (i >= 0) {
-			jTabbedPane1.setTitleAt(i, filenameAlias);
-		}
-
-		String fileDir = documentView.GetFileDirectory();
-		String windowTitle = filenameAlias;
-		if (!documentView.IsUntitled()) {
-			windowTitle += " (" + fileDir + ")";
-		}
-		windowTitle += " (" + documentView.GetEncoding() + ")";
-
-		setTitle(windowTitle);
-	}
-
-	public void HandleDocumentChanged(DocumentView documentView) {
-		SetTabAndWindowTitle(documentView);
+	public void HandleDocumentChanged() {
 		if (searchPanel1.isVisible()) {
 			searchPanel1.MarkAll();
 		}
@@ -313,7 +214,7 @@ public final class MainForm extends javax.swing.JFrame {
 
 	void HandleEscapePressed() {
 		searchPanel1.setVisible(false);
-		CurrentDocumentView().ClearMarkings();
+		tabHandler.HandleEscape();
 	}
 
 	void FormBoundsChanged() {
@@ -328,21 +229,6 @@ public final class MainForm extends javax.swing.JFrame {
 		settings.SetIsMaximizedHorizontal((newState & JFrame.MAXIMIZED_HORIZ) != 0);
 	}
 
-	void TabChanged() {
-		DocumentView newTab = CurrentDocumentView();  // TODO investigate this. A new DocumentView is created when the form is closed. really needed?
-		if (documentStack.contains(newTab)) {
-			documentStack.remove(newTab);
-		}
-
-		// Null check needed here. It might be the last tab that is closed.
-		if (newTab == null) {
-			return;
-		}
-
-		documentStack.add(0, newTab);
-		SetTabAndWindowTitle(newTab);
-	}
-
 	void UpdateWordWrap() {
 		settings.SetWordWrap(jCheckBoxMenuItemWordWrap.isSelected());
 	}
@@ -351,37 +237,12 @@ public final class MainForm extends javax.swing.JFrame {
 		settings.SetShowLineNumbers(jCheckBoxMenuItemShowLineNumbers.isSelected());
 	}
 
-	void ReloadWithDifferentEncoding() {
-		DocumentView documentView = CurrentDocumentView();
-		if (documentView.CanBeReloaded()) {
-
-			EncodingDialog encodingDialog = new EncodingDialog(this, true);
-			encodingDialog.setVisible(true);
-			String encoding = encodingDialog.GetEncoding();
-			if (encoding != null) {
-				CurrentDocumentView().ReloadWithEncoding(encoding);
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(this, "Can not reload new file");
-		}
-	}
-
-	void ChangeEncoding() {
-		EncodingDialog encodingDialog = new EncodingDialog(this, true);
-		encodingDialog.setVisible(true);
-		String encoding = encodingDialog.GetEncoding();
-		if (encoding != null) {
-			CurrentDocumentView().ChangeEncoding(encoding);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         searchPanel1 = new texteditor.SearchPanel();
+        tabHandler = new texteditor.TabHandler(this, settings);
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemNew = new javax.swing.JMenuItem();
@@ -417,17 +278,6 @@ public final class MainForm extends javax.swing.JFrame {
         addWindowStateListener(new java.awt.event.WindowStateListener() {
             public void windowStateChanged(java.awt.event.WindowEvent evt) {
                 formWindowStateChanged(evt);
-            }
-        });
-
-        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTabbedPane1MouseClicked(evt);
-            }
-        });
-        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jTabbedPane1StateChanged(evt);
             }
         });
 
@@ -554,22 +404,22 @@ public final class MainForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jTabbedPane1)
+                .addContainerGap(107, Short.MAX_VALUE))
+            .addComponent(tabHandler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
+                .addComponent(tabHandler, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
-		FileNew();
+		tabHandler.New();
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
@@ -577,11 +427,11 @@ public final class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemOpenActionPerformed
 
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
-		FileSave();
+		tabHandler.FileSave();
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveAsActionPerformed
-		FileSaveAs();
+		tabHandler.FileSaveAs();
     }//GEN-LAST:event_jMenuItemSaveAsActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
@@ -589,7 +439,7 @@ public final class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
     private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCloseActionPerformed
-		FileClose();
+		tabHandler.FileClose();
     }//GEN-LAST:event_jMenuItemCloseActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -604,18 +454,12 @@ public final class MainForm extends javax.swing.JFrame {
 		UpdateWordWrap();
     }//GEN-LAST:event_jCheckBoxMenuItemWordWrapActionPerformed
 
-    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-		if (SwingUtilities.isMiddleMouseButton(evt)) {
-			FileClose();
-		}
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
-
     private void jMenuItemReloadWithEncodingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReloadWithEncodingActionPerformed
-		ReloadWithDifferentEncoding();
+		tabHandler.ReloadWithDifferentEncoding();
     }//GEN-LAST:event_jMenuItemReloadWithEncodingActionPerformed
 
     private void jMenuItemChangeEncodingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemChangeEncodingActionPerformed
-		ChangeEncoding();
+		tabHandler.ChangeEncoding();
     }//GEN-LAST:event_jMenuItemChangeEncodingActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -625,10 +469,6 @@ public final class MainForm extends javax.swing.JFrame {
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
 		FormBoundsChanged(); // improvement: only when movement ends
     }//GEN-LAST:event_formComponentMoved
-
-    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
-		TabChanged();
-    }//GEN-LAST:event_jTabbedPane1StateChanged
 
     private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
 		WindowStateChanged(evt.getNewState());
@@ -656,7 +496,7 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemSaveAs;
     private javax.swing.JMenu jMenuOpenRecent;
     private javax.swing.JMenu jMenuView;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private texteditor.SearchPanel searchPanel1;
+    private texteditor.TabHandler tabHandler;
     // End of variables declaration//GEN-END:variables
 }
