@@ -1,7 +1,12 @@
 Bugs/problems:
 - Shift+home/end selection disappears
 - If middle mouse button is clicked on the empty area beside the tabs, the current tab is closed anyway.
+- Opening a file, do a small edit, and undo the edit, the file is still marked with *. Possible to use isLocalAndExists?
 
 # Features:
 - In-program feature request
 - Instead of showing "Can not reload new file", the menu option "Reload file with different encoding..." should be disabled.
+- Selecting a piece of text and pressing Ctrl+F should fill the search text box with the selected text
+- "Save as" should suggest the directory of the current file
+- Detect external changes to file
+- Show line number in a status bar at the bottom of the window
