@@ -17,4 +17,19 @@ public interface PropertiesEvent {
 			pl.DirtyChanged(documentView);
 		}
 	}
+
+	public class ContentChangedEvent implements PropertiesEvent {
+
+		DocumentView documentView;
+
+		public ContentChangedEvent(DocumentView dv) {
+			documentView = dv;
+		}
+
+		@Override
+		public void notify(PropertiesListener pl) {
+			pl.ContentChanged(documentView);
+		}
+	}
+
 }

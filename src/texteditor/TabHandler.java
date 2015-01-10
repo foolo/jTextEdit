@@ -20,6 +20,11 @@ public class TabHandler extends javax.swing.JPanel {
 		void DirtyChanged(DocumentView dv) {
 			SetTabAndWindowTitle(dv);
 		}
+
+		@Override
+		void ContentChanged(DocumentView dv) {
+			UpdateMarkAllSearchHits(dv);
+		}
 	}
 	PropertiesListener propertiesListener = new TabHandlerPropertiesListener();
 
@@ -66,10 +71,9 @@ public class TabHandler extends javax.swing.JPanel {
 		DocumentView document = new DocumentView(this, settings, propertyDispatcher);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
-		HandleDocumentContentChanged(document);
 	}
 
-	public void HandleDocumentContentChanged(DocumentView documentView) {
+	public void UpdateMarkAllSearchHits(DocumentView documentView) {
 		mainForm.UpdateMarkAllSearchHits(documentView);
 	}
 

@@ -73,6 +73,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 			@Override
 			public void caretUpdate(CaretEvent e) {
+				// TODO use proertieslistener for this instead?
 				tabHandler.HandleDocumentPropertiesChanged(thisDocumentView);
 			}
 		});
@@ -138,8 +139,11 @@ public class DocumentView extends javax.swing.JPanel {
 	public void ReloadWithEncoding(String encoding) {
 		SetEncoding(encoding);
 		try {
+			int position = textEditorPane1.getCaretPosition();
 			textEditorPane1.reload();
-			tabHandler.HandleDocumentContentChanged(this);
+			tabHandler.UpdateMarkAllSearchHits(this);
+			textEditorPane1.discardAllEdits();
+			textEditorPane1.setCaretPosition(position);
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
@@ -148,7 +152,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 	public void ChangeEncoding(String encoding) {
 		SetEncoding(encoding);
-		tabHandler.HandleDocumentContentChanged(this);
+		tabHandler.UpdateMarkAllSearchHits(this);
 	}
 
 	public boolean IsLoaded(File f) {
@@ -168,7 +172,6 @@ public class DocumentView extends javax.swing.JPanel {
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		tabHandler.HandleDocumentContentChanged(this);
 	}
 
 	String GetFilenameAlias() {
@@ -205,9 +208,14 @@ public class DocumentView extends javax.swing.JPanel {
 	void KeyReleased() {
 		// TODO this is now called on all keys, even arrow keys (i.e. when the document is not actually changed)
 		// could be split in content-changes and soft (e.g. line number) changes
-		tabHandler.HandleDocumentContentChanged(this);
+		//tabHandler.HandleDocumentContentChanged(this);
 
+	}
+
+	// Catches keys that affects the contents (letters, backspace, Ctrl+V etc. but not navigation buttons)
+	void KeyTyped() {
 		// TODO this does not catch all changes, (e.g. right-click+paste)
+		propertyDispatcher.NotifyListeners(new PropertiesEvent.ContentChangedEvent(this));
 	}
 
 	void ClearMarkings() {
@@ -225,7 +233,6 @@ public class DocumentView extends javax.swing.JPanel {
 			catch (IOException ex) {
 				JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
 			}
-			tabHandler.HandleDocumentContentChanged(this);
 			m_untitled = false;
 			return true;
 		}
@@ -236,7 +243,6 @@ public class DocumentView extends javax.swing.JPanel {
 		if (selectedFile != null) {
 			try {
 				textEditorPane1.saveAs(FileLocation.create(selectedFile));
-				tabHandler.HandleDocumentContentChanged(this);
 				UpdateSyntaxEditingStyle();
 				m_untitled = false;
 			}
@@ -328,13 +334,14 @@ public class DocumentView extends javax.swing.JPanel {
 		textEditorPane1.addKeyListener(new java.awt.event.KeyAdapter() {
 			@Override
 			public void keyReleased(java.awt.event.KeyEvent evt) {
-				textEditorPane1KeyReleased(evt);
+				KeyReleased();
+			}
+
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent evt) {
+				KeyTyped();
 			}
 		});
-	}
-
-	private void textEditorPane1KeyReleased(java.awt.event.KeyEvent evt) {
-		KeyReleased();
 	}
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
