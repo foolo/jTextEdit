@@ -115,7 +115,7 @@ public class DocumentView extends javax.swing.JPanel {
 		SetEncoding(encoding);
 		try {
 			textEditorPane1.reload();
-			tabHandler.HandleDocumentChanged(this);
+			tabHandler.HandleDocumentContentChanged(this);
 		}
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,7 +124,7 @@ public class DocumentView extends javax.swing.JPanel {
 
 	public void ChangeEncoding(String encoding) {
 		SetEncoding(encoding);
-		tabHandler.HandleDocumentChanged(this);
+		tabHandler.HandleDocumentContentChanged(this);
 	}
 
 	public boolean IsLoaded(File f) {
@@ -144,7 +144,7 @@ public class DocumentView extends javax.swing.JPanel {
 		catch (IOException ex) {
 			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		tabHandler.HandleDocumentChanged(this);
+		tabHandler.HandleDocumentContentChanged(this);
 	}
 
 	String GetFilenameAlias() {
@@ -174,8 +174,15 @@ public class DocumentView extends javax.swing.JPanel {
 		return GetFilenameAlias();
 	}
 
+	int GetCurrentLine() {
+		return rTextScrollPane1.getTextArea().getCaretLineNumber();
+	}
+
 	void KeyReleased() {
-		tabHandler.HandleDocumentChanged(this);
+		// TODO this is now called on all keys, even arrow keys (i.e. when the document is not actually changed)
+		// could be split in content-changes and soft (e.g. line number) changes
+		tabHandler.HandleDocumentContentChanged(this);
+		tabHandler.HandleDocumentPropertiesChanged(this);
 	}
 
 	void ClearMarkings() {
@@ -193,7 +200,7 @@ public class DocumentView extends javax.swing.JPanel {
 			catch (IOException ex) {
 				JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
 			}
-			tabHandler.HandleDocumentChanged(this);
+			tabHandler.HandleDocumentContentChanged(this);
 			m_untitled = false;
 			return true;
 		}
@@ -204,7 +211,7 @@ public class DocumentView extends javax.swing.JPanel {
 		if (selectedFile != null) {
 			try {
 				textEditorPane1.saveAs(FileLocation.create(selectedFile));
-				tabHandler.HandleDocumentChanged(this);
+				tabHandler.HandleDocumentContentChanged(this);
 				UpdateSyntaxEditingStyle();
 				m_untitled = false;
 			}

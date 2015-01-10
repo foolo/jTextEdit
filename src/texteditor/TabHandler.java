@@ -49,12 +49,16 @@ public class TabHandler extends javax.swing.JPanel {
 		DocumentView document = new DocumentView(this, settings);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
-		HandleDocumentChanged(document);
+		HandleDocumentContentChanged(document);
 	}
 
-	public void HandleDocumentChanged(DocumentView documentView) {
+	public void HandleDocumentContentChanged(DocumentView documentView) {
 		SetTabAndWindowTitle(documentView);
-		mainForm.HandleDocumentChanged();
+		mainForm.HandleDocumentContentChanged(documentView);
+	}
+
+	public void HandleDocumentPropertiesChanged(DocumentView documentView) {
+		mainForm.HandleDocumentPropertiesChanged(documentView);
 	}
 
 	void DoOpen(File f) {
@@ -153,6 +157,7 @@ public class TabHandler extends javax.swing.JPanel {
 
 		documentStack.add(0, newTab);
 		SetTabAndWindowTitle(newTab);
+		mainForm.HandleDocumentPropertiesChanged(newTab);
 	}
 
 	void ReloadWithDifferentEncoding() {
