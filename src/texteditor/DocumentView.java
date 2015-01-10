@@ -1,5 +1,7 @@
 package texteditor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -12,6 +14,7 @@ import javax.swing.event.CaretListener;
 import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
+import static org.fife.ui.rsyntaxtextarea.TextEditorPane.DIRTY_PROPERTY;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -41,11 +44,13 @@ public class DocumentView extends javax.swing.JPanel {
 	final JFileChooser jFileChooser1 = new JFileChooser();
 	TabHandler tabHandler;
 	Settings settings;
+	PropertyDispatcher propertyDispatcher;
 
-	public DocumentView(TabHandler th, Settings s) {
+	public DocumentView(TabHandler th, Settings s, PropertyDispatcher pd) {
 		initTextEditorPane();
 		initComponents();
 		settings = s;
+		propertyDispatcher = pd;
 		tabHandler = th;
 		textEditorPane1.setEncoding("UTF-8");
 		textEditorPane1.setDirty(false);
@@ -54,8 +59,16 @@ public class DocumentView extends javax.swing.JPanel {
 		mySettingsListener.CallAll();
 		System.out.println(textEditorPane1.getDropTarget());
 		textEditorPane1.setDropTarget(null);
-
 		final DocumentView thisDocumentView = this;
+
+		rTextScrollPane1.getTextArea().addPropertyChangeListener(DIRTY_PROPERTY, new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				propertyDispatcher.NotifyListeners(new PropertiesEvent.DirtyEvent(thisDocumentView));
+			}
+		});
+
 		rTextScrollPane1.getTextArea().addCaretListener(new CaretListener() {
 
 			@Override

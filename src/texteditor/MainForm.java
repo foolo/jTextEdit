@@ -24,6 +24,8 @@ public final class MainForm extends javax.swing.JFrame {
 
 	Settings settings = new Settings();
 
+	PropertyDispatcher propertyDispatcher = new PropertyDispatcher();
+
 	DocumentSwitcher documentSwitcher = null;
 
 	private final TransferHandler handler;
@@ -140,6 +142,7 @@ public final class MainForm extends javax.swing.JFrame {
 		initFromSettings();
 		settings.AddListener(mySettingsListener);
 		mySettingsListener.CallAll();
+		propertyDispatcher.AddListener(tabHandler.propertiesListener);
 		initializeGlobalKeys();
 		searchPanel1.setVisible(false);
 		searchPanel1.PostAttachment(this, tabHandler);
@@ -249,7 +252,7 @@ public final class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         searchPanel1 = new texteditor.SearchPanel();
-        tabHandler = new texteditor.TabHandler(this, settings);
+        tabHandler = new texteditor.TabHandler(this, settings, propertyDispatcher);
         statusBar1 = new texteditor.StatusBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();

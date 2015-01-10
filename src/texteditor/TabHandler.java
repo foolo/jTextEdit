@@ -11,7 +11,17 @@ public class TabHandler extends javax.swing.JPanel {
 	ArrayList<DocumentView> documentStack = new ArrayList<>();
 
 	Settings settings;
+	PropertyDispatcher propertyDispatcher;
 	MainForm mainForm;
+
+	private class TabHandlerPropertiesListener extends PropertiesListener {
+
+		@Override
+		void DirtyChanged(DocumentView dv) {
+			SetTabAndWindowTitle(dv);
+		}
+	}
+	PropertiesListener propertiesListener = new TabHandlerPropertiesListener();
 
 	public TabHandler() {
 		initComponents();
@@ -21,6 +31,13 @@ public class TabHandler extends javax.swing.JPanel {
 		initComponents();
 		mainForm = mf;
 		settings = s;
+	}
+
+	public TabHandler(MainForm mf, Settings s, PropertyDispatcher pd) {
+		initComponents();
+		mainForm = mf;
+		settings = s;
+		propertyDispatcher = pd;
 	}
 
 	ArrayList<DocumentView> GetDocumentStack() {
@@ -41,12 +58,12 @@ public class TabHandler extends javax.swing.JPanel {
 			return ((DocumentView) c);
 		}
 		else {
-			return new DocumentView(this, settings);
+			return new DocumentView(this, settings, propertyDispatcher);
 		}
 	}
 
 	void New() {
-		DocumentView document = new DocumentView(this, settings);
+		DocumentView document = new DocumentView(this, settings, propertyDispatcher);
 		jTabbedPane1.add(document, document.GetFilenameAlias());
 		jTabbedPane1.setSelectedComponent(document);
 		HandleDocumentContentChanged(document);
@@ -55,8 +72,6 @@ public class TabHandler extends javax.swing.JPanel {
 	public void HandleDocumentContentChanged(DocumentView documentView) {
 
 		// TODO should only be needed on dirty changed
-		SetTabAndWindowTitle(documentView);
-
 		mainForm.HandleDocumentContentChanged(documentView);
 	}
 
@@ -77,7 +92,7 @@ public class TabHandler extends javax.swing.JPanel {
 			currentDocumentView.LoadFile(f);
 		}
 		else {
-			DocumentView documentView = new DocumentView(this, settings);
+			DocumentView documentView = new DocumentView(this, settings, propertyDispatcher);
 			jTabbedPane1.add(documentView);
 			jTabbedPane1.setSelectedComponent(documentView);
 			documentView.LoadFile(f);
