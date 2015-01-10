@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
@@ -52,6 +54,15 @@ public class DocumentView extends javax.swing.JPanel {
 		mySettingsListener.CallAll();
 		System.out.println(textEditorPane1.getDropTarget());
 		textEditorPane1.setDropTarget(null);
+
+		final DocumentView thisDocumentView = this;
+		rTextScrollPane1.getTextArea().addCaretListener(new CaretListener() {
+
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				tabHandler.HandleDocumentPropertiesChanged(thisDocumentView);
+			}
+		});
 	}
 
 	public boolean OkToReplace() {
@@ -182,7 +193,6 @@ public class DocumentView extends javax.swing.JPanel {
 		// TODO this is now called on all keys, even arrow keys (i.e. when the document is not actually changed)
 		// could be split in content-changes and soft (e.g. line number) changes
 		tabHandler.HandleDocumentContentChanged(this);
-		tabHandler.HandleDocumentPropertiesChanged(this);
 	}
 
 	void ClearMarkings() {
