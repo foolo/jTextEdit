@@ -9,3 +9,4 @@ Bugs/problems:
 - Selecting a piece of text and pressing Ctrl+F should fill the search text box with the selected text
 - "Save as" should suggest the directory of the current file
 - Detect external changes to file
+- Goto line

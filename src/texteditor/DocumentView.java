@@ -193,6 +193,8 @@ public class DocumentView extends javax.swing.JPanel {
 		// TODO this is now called on all keys, even arrow keys (i.e. when the document is not actually changed)
 		// could be split in content-changes and soft (e.g. line number) changes
 		tabHandler.HandleDocumentContentChanged(this);
+
+		// TODO this does not catch all changes, (e.g. right-click+paste)
 	}
 
 	void ClearMarkings() {
