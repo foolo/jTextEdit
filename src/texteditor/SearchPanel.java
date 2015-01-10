@@ -12,15 +12,11 @@ public class SearchPanel extends javax.swing.JPanel {
 		initComponents();
 	}
 
-	public SearchPanel(TabHandler th) {
-		initComponents();
-		tabHandler = th;
-	}
-
 	MainForm textEditor = null;
 
-	public void SetMainForm(MainForm te) {
+	public void PostAttachment(MainForm te, TabHandler th) {
 		textEditor = te;
+		tabHandler = th;
 	}
 
 	void UpdateSearchContext() {

@@ -142,7 +142,7 @@ public final class MainForm extends javax.swing.JFrame {
 		mySettingsListener.CallAll();
 		initializeGlobalKeys();
 		searchPanel1.setVisible(false);
-		searchPanel1.SetMainForm(this);
+		searchPanel1.PostAttachment(this, tabHandler);
 		jFileChooser1.setMultiSelectionEnabled(true);
 		tabHandler.New();
 		setTransferHandler(handler);
