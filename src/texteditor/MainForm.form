@@ -187,8 +187,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="searchPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="107" max="32767" attributes="0"/>
+              <EmptySpace pref="61" max="32767" attributes="0"/>
           </Group>
+          <Component id="statusBar1" alignment="1" max="32767" attributes="0"/>
           <Component id="tabHandler" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -197,7 +198,9 @@
           <Group type="102" alignment="1" attributes="0">
               <Component id="searchPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabHandler" pref="362" max="32767" attributes="0"/>
+              <Component id="tabHandler" pref="327" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="statusBar1" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -209,6 +212,8 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new texteditor.TabHandler(this, settings)"/>
       </AuxValues>
+    </Component>
+    <Component class="texteditor.StatusBar" name="statusBar1">
     </Component>
   </SubComponents>
 </Form>
