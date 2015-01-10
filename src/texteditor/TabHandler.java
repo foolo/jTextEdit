@@ -70,9 +70,7 @@ public class TabHandler extends javax.swing.JPanel {
 	}
 
 	public void HandleDocumentContentChanged(DocumentView documentView) {
-
-		// TODO should only be needed on dirty changed
-		mainForm.HandleDocumentContentChanged(documentView);
+		mainForm.UpdateMarkAllSearchHits(documentView);
 	}
 
 	public void HandleDocumentPropertiesChanged(DocumentView documentView) {

@@ -212,7 +212,7 @@ public final class MainForm extends javax.swing.JFrame {
 		searchPanel1.setVisible(true);
 	}
 
-	public void HandleDocumentContentChanged(DocumentView documentView) {
+	public void UpdateMarkAllSearchHits(DocumentView documentView) {
 		if (searchPanel1.isVisible()) {
 			searchPanel1.MarkAll();
 		}
