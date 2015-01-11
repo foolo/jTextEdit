@@ -95,9 +95,9 @@ public class TabHandler extends javax.swing.JPanel {
 		}
 		else {
 			DocumentView documentView = new DocumentView(this, settings, propertyDispatcher);
+			documentView.LoadFile(f);
 			jTabbedPane1.add(documentView);
 			jTabbedPane1.setSelectedComponent(documentView);
-			documentView.LoadFile(f);
 		}
 
 		RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();

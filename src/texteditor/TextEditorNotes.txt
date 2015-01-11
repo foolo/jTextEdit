@@ -2,7 +2,7 @@ Bugs/problems:
 - Shift+home/end selection disappears
 - If middle mouse button is clicked on the empty area beside the tabs, the current tab is closed anyway.
 - Opening a file, do a small edit, and undo the edit, the file is still marked with *. Possible to use isLocalAndExists?
-- Tab name is not set when opening a file
+- Tab name is not set when opening a file in an untitled unmodified window.
 
 # Features:
 - In-program feature request
