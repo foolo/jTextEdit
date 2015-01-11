@@ -92,6 +92,7 @@ public class TabHandler extends javax.swing.JPanel {
 		DocumentView currentDocumentView = CurrentDocumentView();
 		if (currentDocumentView.OkToReplace()) {
 			currentDocumentView.LoadFile(f);
+			SetTabAndWindowTitle(currentDocumentView);
 		}
 		else {
 			DocumentView documentView = new DocumentView(this, settings, propertyDispatcher);
