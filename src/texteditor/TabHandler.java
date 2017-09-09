@@ -121,7 +121,7 @@ public class TabHandler extends javax.swing.JPanel {
 			}
 
 			if (jTabbedPane1.getTabCount() == 0) {
-				mainForm.DoExit();
+				New();
 			}
 			return true;
 		}
@@ -136,12 +136,13 @@ public class TabHandler extends javax.swing.JPanel {
 		CurrentDocumentView().FileSaveAs();
 	}
 
-	void CloseAllTabs() {
-		while (jTabbedPane1.getTabCount() > 0) {
+	boolean CloseAllTabs() {
+		while (jTabbedPane1.getTabCount() > 1) {
 			if (FileClose() == false) {
-				return;
+				return false;
 			}
 		}
+		return FileClose();
 	}
 
 	void SetTabAndWindowTitle(DocumentView documentView) {

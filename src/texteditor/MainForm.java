@@ -197,15 +197,10 @@ public final class MainForm extends javax.swing.JFrame {
 		}
 	}
 
-	void DoExit() {
-		if (tabHandler.GetTabCount() == 0) {
+	void FileExit() {
+		if (tabHandler.CloseAllTabs()) {
 			dispose();
 		}
-	}
-
-	void FileExit() {
-		tabHandler.CloseAllTabs();
-		DoExit();
 	}
 
 	void EditFind() {
