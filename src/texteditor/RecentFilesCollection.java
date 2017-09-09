@@ -37,14 +37,24 @@ public class RecentFilesCollection {
 
 	public void AddFile(File f) {
 		try {
+			removeFile(f);
 			String fullPathToAdd = f.getCanonicalPath();
+			m_recentFiles.add(fullPathToAdd);
+		}
+		catch (IOException ex) {
+			Logger.getLogger(RecentFilesCollection.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	public void removeFile(File f) {
+		try {
+			String fullPathToRemove = f.getCanonicalPath();
 			for (Iterator<String> iterator = m_recentFiles.iterator(); iterator.hasNext();) {
 				String fullPath = iterator.next();
-				if (fullPath.equals(fullPathToAdd)) {
+				if (fullPath.equals(fullPathToRemove)) {
 					iterator.remove();
 				}
 			}
-			m_recentFiles.add(fullPathToAdd);
 		}
 		catch (IOException ex) {
 			Logger.getLogger(RecentFilesCollection.class.getName()).log(Level.SEVERE, null, ex);

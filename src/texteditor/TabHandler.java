@@ -90,21 +90,25 @@ public class TabHandler extends javax.swing.JPanel {
 		}
 
 		DocumentView currentDocumentView = CurrentDocumentView();
-		if (currentDocumentView.OkToReplace()) {
-			currentDocumentView.LoadFile(f);
-			SetTabAndWindowTitle(currentDocumentView);
-		}
-		else {
-			DocumentView documentView = new DocumentView(this, settings, propertyDispatcher);
-			documentView.LoadFile(f);
+		DocumentView documentView = new DocumentView(this, settings, propertyDispatcher);
+		if (documentView.LoadFile(f)) {
 			jTabbedPane1.add(documentView);
 			jTabbedPane1.setSelectedComponent(documentView);
+			if (currentDocumentView.OkToReplace()) {
+				jTabbedPane1.remove(currentDocumentView);
+				documentStack.remove(currentDocumentView);
+			}
+
+			RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
+			recentFiles.AddFile(f);
+			settings.SetRecentFilesCollection(recentFiles);
 		}
-
-		RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
-		recentFiles.AddFile(f);
-		settings.SetRecentFilesCollection(recentFiles);
-
+		else {
+			RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
+			recentFiles.removeFile(f);
+			settings.SetRecentFilesCollection(recentFiles);
+			JOptionPane.showMessageDialog(this, "Could not open \"" + f + "\"");
+		}
 		mainForm.toFront();
 	}
 

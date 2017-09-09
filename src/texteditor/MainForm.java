@@ -15,6 +15,7 @@ import java.util.ListIterator;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 
@@ -159,8 +160,8 @@ public final class MainForm extends javax.swing.JFrame {
 		RecentFilesCollection rfc = settings.GetRecentFilesCollection();
 		ArrayList<String> recentFiles = rfc.GetRecentFiles();
 		jMenuOpenRecent.removeAll();
-
 		ListIterator li = recentFiles.listIterator(recentFiles.size());
+		MainForm mainForm = this;
 		while (li.hasPrevious()) {
 			String filename = (String) li.previous();
 			final JMenuItem item = new JMenuItem(filename);
@@ -168,7 +169,16 @@ public final class MainForm extends javax.swing.JFrame {
 			item.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					tabHandler.DoOpen(new File(item.getText()));
+					File f = new File(item.getText());
+					if (!f.exists()) {
+						RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
+						recentFiles.removeFile(f);
+						settings.SetRecentFilesCollection(recentFiles);
+						JOptionPane.showMessageDialog(mainForm, "Could not find \"" + f + "\"");
+					}
+					else {
+						tabHandler.DoOpen(new File(item.getText()));
+					}
 				}
 			});
 		}

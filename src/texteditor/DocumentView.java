@@ -160,7 +160,7 @@ public class DocumentView extends javax.swing.JPanel {
 		return (fl.getFileFullPath().equals(textEditorPane1.getFileFullPath()));
 	}
 
-	public void LoadFile(File f) {
+	public boolean LoadFile(File f) {
 		try {
 			String encoding = EncodingDetector.GetEncoding(f);
 			System.out.println("Detected encoding: " + encoding);
@@ -168,9 +168,10 @@ public class DocumentView extends javax.swing.JPanel {
 			textEditorPane1.discardAllEdits();
 			UpdateSyntaxEditingStyle();
 			m_untitled = false;
+			return true;
 		}
 		catch (IOException ex) {
-			Logger.getLogger(DocumentView.class.getName()).log(Level.SEVERE, null, ex);
+			return false;
 		}
 	}
 
