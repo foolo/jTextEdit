@@ -16,16 +16,18 @@ public class RecentFilesCollection {
 	private ArrayList<String> m_recentFiles = new ArrayList<>();
 
 	public RecentFilesCollection(byte[] b) {
+		m_recentFiles.clear();
 		ByteArrayInputStream bais = new ByteArrayInputStream(b);
 		ObjectInputStream ois;
 		try {
 			ois = new ObjectInputStream(bais);
-			Object o = ois.readObject();
-			m_recentFiles = (ArrayList<String>) o;
+			ArrayList<?> recentFiles = (ArrayList<?>) ois.readObject();
+			for (Object o: recentFiles) {
+				m_recentFiles.add((String)o);
+			}
 		}
 		catch (IOException | ClassNotFoundException ex) {
 			Logger.getLogger(RecentFilesCollection.class.getName()).log(Level.SEVERE, null, ex);
-			m_recentFiles = new ArrayList<>();
 		}
 	}
 

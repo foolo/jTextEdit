@@ -127,9 +127,9 @@ public final class MainForm extends javax.swing.JFrame {
 				}
 				Transferable t = support.getTransferable();
 				try {
-					java.util.List<File> files = (java.util.List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
-					for (File file : files) {
-						tabHandler.DoOpen(file);
+					java.util.List<?> files = (java.util.List<?>) t.getTransferData(DataFlavor.javaFileListFlavor);
+					for (Object file : files) {
+						tabHandler.DoOpen((File)file);
 					}
 				}
 				catch (UnsupportedFlavorException | IOException e) {

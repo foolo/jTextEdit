@@ -7,7 +7,7 @@ public final class DocumentSwitcher extends javax.swing.JDialog {
 
 	ArrayList<DocumentView> documentStack;
 
-	DefaultListModel listModel = new DefaultListModel();
+	DefaultListModel<DocumentView> listModel = new DefaultListModel<>();
 
 	int currentIndex = 0;
 
