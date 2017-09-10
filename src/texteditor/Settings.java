@@ -34,6 +34,7 @@ public class Settings {
 	private static final String IS_MAXIMIZED_V = "is_maximized_v";
 	private static final String OPEN_DIRECTORY = "open_directory";
 	private static final String RECENT_FILES = "recent_files";
+	private static final String LOOK_AND_FEEL = "LOOK_AND_FEEL";
 
 	void SetRecentFilesCollection(RecentFilesCollection recentFiles) {
 		prefs.putByteArray(RECENT_FILES, recentFiles.toByteArray());
@@ -159,5 +160,13 @@ public class Settings {
 			default:
 				return "text/plain";
 		}
+	}
+
+	String GetLookAndFeel() {
+		return prefs.get(LOOK_AND_FEEL, null);
+	}
+
+	void SetLookAndFeel(String lookAndFeel) {
+		prefs.put(LOOK_AND_FEEL, lookAndFeel);
 	}
 }

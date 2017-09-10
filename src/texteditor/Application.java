@@ -21,10 +21,13 @@ public class Application {
 
 	public static final Logger logger = Logger.getLogger(MainForm.class.getName());
 
-	static void SetLookAndFeel() {
+	static void SetLookAndFeel(Settings settings) {
 		try {
-			String osVersion = System.getProperty("os.name");
-			if (osVersion.contains("Linux")) {
+			String lookAndFeel = settings.GetLookAndFeel();
+			if (lookAndFeel != null) {
+				UIManager.setLookAndFeel(lookAndFeel);
+			}
+			else if (System.getProperty("os.name").contains("Linux")) {
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 			}
 			else {
@@ -97,13 +100,14 @@ public class Application {
 
 		InitializeLogging();
 
-		SetLookAndFeel();
+		Settings settings = new Settings();
+		SetLookAndFeel(settings);
 
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				if (CheckInstance(MainForm.class.getName())) {
-					textEditor = new MainForm();
+					textEditor = new MainForm(settings);
 					textEditor.setVisible(true);
 					LoadIcons();
 					for (String filename : args) {

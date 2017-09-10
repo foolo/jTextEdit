@@ -23,7 +23,7 @@ public final class MainForm extends javax.swing.JFrame {
 
 	final JFileChooser jFileChooser1 = new JFileChooser();
 
-	Settings settings = new Settings();
+	Settings settings;
 
 	PropertyDispatcher propertyDispatcher = new PropertyDispatcher();
 
@@ -107,7 +107,8 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 	MySettingsListener mySettingsListener = new MySettingsListener();
 
-	public MainForm() {
+	public MainForm(Settings s) {
+		settings = s;
 		this.handler = new TransferHandler() {
 			@Override
 			public boolean canImport(TransferHandler.TransferSupport support) {
@@ -141,7 +142,7 @@ public final class MainForm extends javax.swing.JFrame {
 		};
 		initComponents();
 		initFromSettings();
-		settings.AddListener(mySettingsListener);
+		s.AddListener(mySettingsListener);
 		mySettingsListener.CallAll();
 		propertyDispatcher.AddListener(tabHandler.propertiesListener);
 		initializeGlobalKeys();
@@ -274,6 +275,7 @@ public final class MainForm extends javax.swing.JFrame {
         jCheckBoxMenuItemShowLineNumbers = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
+        jMenuItemPreferences = new javax.swing.JMenuItem();
         jMenuDocument = new javax.swing.JMenu();
         jMenuItemReloadWithEncoding = new javax.swing.JMenuItem();
         jMenuItemChangeEncoding = new javax.swing.JMenuItem();
@@ -399,6 +401,14 @@ public final class MainForm extends javax.swing.JFrame {
         });
         jMenuEdit.add(jMenuItemFind);
 
+        jMenuItemPreferences.setText("Preferences...");
+        jMenuItemPreferences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPreferencesActionPerformed(evt);
+            }
+        });
+        jMenuEdit.add(jMenuItemPreferences);
+
         jMenuBar1.add(jMenuEdit);
 
         jMenuDocument.setText("Document");
@@ -513,6 +523,10 @@ public final class MainForm extends javax.swing.JFrame {
 		settings.SetRecentFilesCollection(rfc);
     }//GEN-LAST:event_jMenuItemClearRecentActionPerformed
 
+    private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
+		new PreferencesForm(this, settings).setVisible(true);
+    }//GEN-LAST:event_jMenuItemPreferencesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
@@ -527,6 +541,7 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemFind;
     private javax.swing.JMenuItem jMenuItemNew;
     private javax.swing.JMenuItem jMenuItemOpen;
+    private javax.swing.JMenuItem jMenuItemPreferences;
     private javax.swing.JMenuItem jMenuItemReloadWithEncoding;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemSaveAs;
