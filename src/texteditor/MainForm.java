@@ -276,6 +276,7 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
         jMenuItemPreferences = new javax.swing.JMenuItem();
+        jMenuItemScriptOperations = new javax.swing.JMenuItem();
         jMenuDocument = new javax.swing.JMenu();
         jMenuItemReloadWithEncoding = new javax.swing.JMenuItem();
         jMenuItemChangeEncoding = new javax.swing.JMenuItem();
@@ -409,6 +410,14 @@ public final class MainForm extends javax.swing.JFrame {
         });
         jMenuEdit.add(jMenuItemPreferences);
 
+        jMenuItemScriptOperations.setText("Script operations");
+        jMenuItemScriptOperations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemScriptOperationsActionPerformed(evt);
+            }
+        });
+        jMenuEdit.add(jMenuItemScriptOperations);
+
         jMenuBar1.add(jMenuEdit);
 
         jMenuDocument.setText("Document");
@@ -527,6 +536,12 @@ public final class MainForm extends javax.swing.JFrame {
 		new PreferencesForm(this, settings).setVisible(true);
     }//GEN-LAST:event_jMenuItemPreferencesActionPerformed
 
+    private void jMenuItemScriptOperationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemScriptOperationsActionPerformed
+        ScriptDialog scriptDialog = new ScriptDialog(tabHandler);
+		scriptDialog.setLocationRelativeTo(this);
+		scriptDialog.setVisible(true);
+    }//GEN-LAST:event_jMenuItemScriptOperationsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
@@ -545,6 +560,7 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemReloadWithEncoding;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemSaveAs;
+    private javax.swing.JMenuItem jMenuItemScriptOperations;
     private javax.swing.JMenu jMenuOpenRecent;
     private javax.swing.JMenu jMenuView;
     private texteditor.SearchPanel searchPanel1;

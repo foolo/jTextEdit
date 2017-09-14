@@ -79,6 +79,15 @@ public class DocumentView extends javax.swing.JPanel {
 		});
 	}
 
+	public String getText() {
+		return textEditorPane1.getText();
+	}
+
+	public void setText(String text) {
+		System.out.println("texteditor.DocumentView.setText()");
+		textEditorPane1.setText(text);
+	}
+
 	public boolean OkToReplace() {
 		return m_untitled && !textEditorPane1.isDirty() && textEditorPane1.getText().isEmpty();
 	}
