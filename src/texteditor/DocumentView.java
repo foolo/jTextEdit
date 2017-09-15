@@ -84,8 +84,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	public void setText(String text) {
-		System.out.println("texteditor.DocumentView.setText()");
-		textEditorPane1.setText(text);
+		textEditorPane1.replaceRange(text, 0, textEditorPane1.getText().length());
 	}
 
 	public boolean OkToReplace() {
