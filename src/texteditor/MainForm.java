@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
+import javax.swing.WindowConstants;
 
 public final class MainForm extends javax.swing.JFrame {
 
@@ -30,6 +31,9 @@ public final class MainForm extends javax.swing.JFrame {
 	DocumentSwitcher documentSwitcher = null;
 
 	private final TransferHandler handler;
+
+	PreferencesForm preferencesForm;
+	ScriptDialog scriptDialog;
 
 	private void PassCtrlTabToSwitcher(Frame frame, boolean forward) {
 		if (documentSwitcher == null) {
@@ -142,6 +146,16 @@ public final class MainForm extends javax.swing.JFrame {
 		};
 		initComponents();
 		initFromSettings();
+
+		preferencesForm = new PreferencesForm(this, settings);
+		preferencesForm.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		preferencesForm.setAlwaysOnTop(true);
+
+		scriptDialog = new ScriptDialog(tabHandler);
+		scriptDialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		scriptDialog.setAlwaysOnTop(true);
+		scriptDialog.setLocationRelativeTo(this);
+
 		s.AddListener(mySettingsListener);
 		mySettingsListener.CallAll();
 		propertyDispatcher.AddListener(tabHandler.propertiesListener);
@@ -210,6 +224,8 @@ public final class MainForm extends javax.swing.JFrame {
 
 	void FileExit() {
 		if (tabHandler.CloseAllTabs()) {
+			preferencesForm.dispose();
+			scriptDialog.dispose();
 			dispose();
 		}
 	}
@@ -282,22 +298,25 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuItemChangeEncoding = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
-            }
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
+            }
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
             }
         });
         addWindowStateListener(new java.awt.event.WindowStateListener() {
             public void windowStateChanged(java.awt.event.WindowEvent evt) {
                 formWindowStateChanged(evt);
+            }
+        });
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -533,14 +552,21 @@ public final class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClearRecentActionPerformed
 
     private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
-		new PreferencesForm(this, settings).setVisible(true);
+		if(!preferencesForm.isVisible()) {
+			preferencesForm.setVisible(true);
+		}
     }//GEN-LAST:event_jMenuItemPreferencesActionPerformed
 
     private void jMenuItemScriptOperationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemScriptOperationsActionPerformed
-        ScriptDialog scriptDialog = new ScriptDialog(tabHandler);
-		scriptDialog.setLocationRelativeTo(this);
-		scriptDialog.setVisible(true);
+		if (!scriptDialog.isVisible()) {
+			scriptDialog.setVisible(true);
+		}
     }//GEN-LAST:event_jMenuItemScriptOperationsActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+		scriptDialog.setLocationRelativeTo(this);
+		preferencesForm.setLocationRelativeTo(this);
+    }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;

@@ -1,6 +1,5 @@
 package texteditor;
 
-import java.awt.event.ItemEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
