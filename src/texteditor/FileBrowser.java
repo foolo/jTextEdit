@@ -3,6 +3,8 @@ package texteditor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -12,31 +14,35 @@ public class FileBrowser extends javax.swing.JPanel {
 
 	public static class DirectoryTreeNode implements TreeNode {
 
-		class DirEntry {
-
-			DirEntry(String name, TreeNode node) {
-				this.name = name;
-				this.node = node;
-			}
-			String name;
-			TreeNode node;
-		}
-
 		File file;
 
-		ArrayList<DirEntry> dirEntries = null;
+		ArrayList<DirectoryTreeNode> dirEntries = null;
 
 		DirectoryTreeNode(File file) {
 			this.file = file;
-			if (file.isDirectory()) {
-				File f = file;
-				dirEntries = new ArrayList<>();
-				String[] names = file.list();
-				if (names != null) {
-					for (String name : names) {
-						dirEntries.add(new DirEntry(name, null));
-					}
+		}
+
+		void initializeDirEntries() {
+			if (dirEntries != null) {
+				return;
+			}
+			dirEntries = new ArrayList<>();
+			File[] filesArr = file.listFiles();
+			if (filesArr == null) {
+				return;
+			}
+			ArrayList<File> files = new ArrayList<>(Arrays.asList(filesArr));
+			Collections.sort(files, (File f1, File f2) -> {
+				if (f1.isDirectory() && !f2.isDirectory()) {
+					return -1;
 				}
+				if (!f1.isDirectory() && f2.isDirectory()) {
+					return 1;
+				}
+				return f1.compareTo(f2);
+			});
+			for (File f : files) {
+				dirEntries.add(new DirectoryTreeNode(f));
 			}
 		}
 
@@ -47,18 +53,13 @@ public class FileBrowser extends javax.swing.JPanel {
 
 		@Override
 		public TreeNode getChildAt(int index) {
-			DirEntry dirEntry = dirEntries.get(index);
-			if (dirEntry.node == null) {
-				dirEntry.node = new DirectoryTreeNode(new File(file, dirEntry.name));
-			}
-			return dirEntry.node;
+			initializeDirEntries();
+			return dirEntries.get(index);
 		}
 
 		@Override
 		public int getChildCount() {
-			if (dirEntries == null) {
-				return 0;
-			}
+			initializeDirEntries();
 			return dirEntries.size();
 		}
 
