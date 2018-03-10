@@ -5,6 +5,8 @@ public abstract class SettingsListener {
 	void CallAll() {
 		WordWrapChanged();
 		ShowLineNumbersChanged();
+		ShowFileBrowserChanged();
+		FileBrowserRootDirChanged();
 		RecentFilesChanged();
 	}
 
@@ -12,6 +14,12 @@ public abstract class SettingsListener {
 	}
 
 	void ShowLineNumbersChanged() {
+	}
+
+	void ShowFileBrowserChanged() {
+	}
+
+	void FileBrowserRootDirChanged() {
 	}
 
 	void RecentFilesChanged() {

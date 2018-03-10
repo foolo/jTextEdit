@@ -26,6 +26,7 @@ public class Settings {
 	////////////////////////////////////////////////////////////////////////
 	private static final String WORD_WRAP = "word_wrap";
 	private static final String SHOW_LINE_NUMBERS = "show_line_numbers";
+	private static final String SHOW_FILE_BROWSER = "show_file_browser";
 	private static final String MAIN_BOUNDS_X = "main_bounds_x";
 	private static final String MAIN_BOUNDS_Y = "main_bounds_y";
 	private static final String MAIN_BOUNDS_WIDTH = "main_bounds_width";
@@ -33,6 +34,7 @@ public class Settings {
 	private static final String IS_MAXIMIZED_H = "is_maximized_h";
 	private static final String IS_MAXIMIZED_V = "is_maximized_v";
 	private static final String OPEN_DIRECTORY = "open_directory";
+	private static final String FILE_BROWSER_DIRECTORY = "file_browser_directory";
 	private static final String RECENT_FILES = "recent_files";
 	private static final String LOOK_AND_FEEL = "LOOK_AND_FEEL";
 
@@ -51,6 +53,11 @@ public class Settings {
 		NotifyListeners(new SettingsEvent.ShowLineNumbersEvent());
 	}
 
+	void SetShowFileBrowser(boolean showFileBrowser) {
+		prefs.putBoolean(SHOW_FILE_BROWSER, showFileBrowser);
+		NotifyListeners(new SettingsEvent.ShowFileBrowserEvent());
+	}
+
 	RecentFilesCollection GetRecentFilesCollection() {
 		byte[] b = prefs.getByteArray(RECENT_FILES, new byte[]{});
 		return new RecentFilesCollection(b);
@@ -62,6 +69,10 @@ public class Settings {
 
 	boolean GetShowLineNumbers() {
 		return prefs.getBoolean(SHOW_LINE_NUMBERS, false);
+	}
+
+	boolean GetShowFileBrowser() {
+		return prefs.getBoolean(SHOW_FILE_BROWSER, true);
 	}
 
 	void SetMainFormBounds(Rectangle bounds) {
@@ -116,8 +127,21 @@ public class Settings {
 		return new File(dir);
 	}
 
+	File GetFileBrowserDirectory() {
+		String dir = prefs.get(FILE_BROWSER_DIRECTORY, null);
+		if (dir == null) {
+			dir = System.getProperty("user.home");
+		}
+		return new File(dir);
+	}
+
 	void SetOpenDirectory(File openDirectory) {
 		prefs.put(OPEN_DIRECTORY, openDirectory.toString());
+	}
+
+	void SetFileBrowserDirectory(File fileBrowserDirectory) {
+		prefs.put(FILE_BROWSER_DIRECTORY, fileBrowserDirectory.toString());
+		NotifyListeners(new SettingsEvent.FileBrowserRootDirChangedEvent());
 	}
 
 	String GetSyntaxForFileExtension(String fileExtension) {

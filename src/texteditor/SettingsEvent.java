@@ -20,6 +20,22 @@ public interface SettingsEvent {
 		}
 	}
 
+	public class ShowFileBrowserEvent implements SettingsEvent {
+
+		@Override
+		public void notify(SettingsListener settingsListener) {
+			settingsListener.ShowFileBrowserChanged();
+		}
+	}
+
+	public class FileBrowserRootDirChangedEvent implements SettingsEvent {
+
+		@Override
+		public void notify(SettingsListener settingsListener) {
+			settingsListener.FileBrowserRootDirChanged();
+		}
+	}
+
 	public class RecentFilesChangedEvent implements SettingsEvent {
 
 		@Override

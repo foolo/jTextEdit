@@ -90,6 +90,9 @@ public final class MainForm extends javax.swing.JFrame {
 		boolean showLineNumbers = settings.GetShowLineNumbers();
 		jCheckBoxMenuItemShowLineNumbers.setSelected(showLineNumbers);
 
+		boolean showFileBrowser = settings.GetShowFileBrowser();
+		jCheckBoxMenuItemShowFileBrowser.setSelected(showFileBrowser);
+
 		Rectangle bounds = settings.GetMainFormBounds();
 		setBounds(bounds);
 		int newState = 0;
@@ -100,6 +103,9 @@ public final class MainForm extends javax.swing.JFrame {
 			newState |= JFrame.MAXIMIZED_VERT;
 		}
 		setExtendedState(newState);
+
+		fileBrowser1.setVisible(settings.GetShowFileBrowser());
+		fileBrowser1.showDir(settings.GetFileBrowserDirectory());
 	}
 
 	private class MySettingsListener extends SettingsListener {
@@ -107,6 +113,17 @@ public final class MainForm extends javax.swing.JFrame {
 		@Override
 		void RecentFilesChanged() {
 			UpdateOpenRecentMenu();
+		}
+
+		@Override
+		void ShowFileBrowserChanged() {
+			UpdateOpenRecentMenu();
+			fileBrowser1.setVisible(settings.GetShowFileBrowser());
+		}
+
+		@Override
+		void FileBrowserRootDirChanged() {
+			fileBrowser1.showDir(settings.GetFileBrowserDirectory());
 		}
 	}
 	MySettingsListener mySettingsListener = new MySettingsListener();
@@ -135,7 +152,7 @@ public final class MainForm extends javax.swing.JFrame {
 				try {
 					java.util.List<?> files = (java.util.List<?>) t.getTransferData(DataFlavor.javaFileListFlavor);
 					for (Object file : files) {
-						tabHandler.DoOpen((File)file);
+						tabHandler.DoOpen((File) file);
 					}
 				}
 				catch (UnsupportedFlavorException | IOException e) {
@@ -165,6 +182,17 @@ public final class MainForm extends javax.swing.JFrame {
 		jFileChooser1.setMultiSelectionEnabled(true);
 		tabHandler.New();
 		setTransferHandler(handler);
+		fileBrowser1.addFileBrowserListener(new FileBrowser.FileBrowserListener() {
+			@Override
+			public void fileSelected(File file) {
+				Open(file);
+			}
+
+			@Override
+			public void directoryChangeRequested(File file) {
+				settings.SetFileBrowserDirectory(file);
+			}
+		});
 	}
 
 	void Open(File f) {
@@ -269,6 +297,10 @@ public final class MainForm extends javax.swing.JFrame {
 		settings.SetShowLineNumbers(jCheckBoxMenuItemShowLineNumbers.isSelected());
 	}
 
+	void UpdateShowFileBrowser() {
+		settings.SetShowFileBrowser(jCheckBoxMenuItemShowFileBrowser.isSelected());
+	}
+
 	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -276,6 +308,7 @@ public final class MainForm extends javax.swing.JFrame {
         searchPanel1 = new texteditor.SearchPanel();
         tabHandler = new texteditor.TabHandler(this, settings, propertyDispatcher);
         statusBar1 = new texteditor.StatusBar();
+        fileBrowser1 = new texteditor.FileBrowser();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemNew = new javax.swing.JMenuItem();
@@ -289,6 +322,7 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuView = new javax.swing.JMenu();
         jCheckBoxMenuItemWordWrap = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemShowLineNumbers = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemShowFileBrowser = new javax.swing.JCheckBoxMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFind = new javax.swing.JMenuItem();
         jMenuItemPreferences = new javax.swing.JMenuItem();
@@ -408,6 +442,15 @@ public final class MainForm extends javax.swing.JFrame {
         });
         jMenuView.add(jCheckBoxMenuItemShowLineNumbers);
 
+        jCheckBoxMenuItemShowFileBrowser.setSelected(true);
+        jCheckBoxMenuItemShowFileBrowser.setText("Show file browser");
+        jCheckBoxMenuItemShowFileBrowser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItemShowFileBrowserActionPerformed(evt);
+            }
+        });
+        jMenuView.add(jCheckBoxMenuItemShowFileBrowser);
+
         jMenuBar1.add(jMenuView);
 
         jMenuEdit.setText("Edit");
@@ -466,18 +509,24 @@ public final class MainForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
-            .addComponent(statusBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(tabHandler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(fileBrowser1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabHandler, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 13, Short.MAX_VALUE))))
+            .addComponent(statusBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabHandler, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tabHandler, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))
+                    .addComponent(fileBrowser1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -552,7 +601,7 @@ public final class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClearRecentActionPerformed
 
     private void jMenuItemPreferencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPreferencesActionPerformed
-		if(!preferencesForm.isVisible()) {
+		if (!preferencesForm.isVisible()) {
 			preferencesForm.setVisible(true);
 		}
     }//GEN-LAST:event_jMenuItemPreferencesActionPerformed
@@ -568,7 +617,13 @@ public final class MainForm extends javax.swing.JFrame {
 		preferencesForm.setLocationRelativeTo(this);
     }//GEN-LAST:event_formWindowOpened
 
+    private void jCheckBoxMenuItemShowFileBrowserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItemShowFileBrowserActionPerformed
+		UpdateShowFileBrowser();
+    }//GEN-LAST:event_jCheckBoxMenuItemShowFileBrowserActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private texteditor.FileBrowser fileBrowser1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowFileBrowser;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemShowLineNumbers;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemWordWrap;
     private javax.swing.JMenuBar jMenuBar1;
