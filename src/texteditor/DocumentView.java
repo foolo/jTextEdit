@@ -122,8 +122,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	void UpdateSyntaxEditingStyle() {
-		String fileExt = FilenameUtils.getExtension(textEditorPane1.getFileName());
-		String syntaxMime = settings.GetSyntaxForFileExtension(fileExt);
+		String syntaxMime = settings.GetSyntaxForFilename(textEditorPane1.getFileName());
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
 	}
 

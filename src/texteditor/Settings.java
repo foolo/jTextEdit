@@ -5,6 +5,8 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
+import org.apache.commons.io.FilenameUtils;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import util.Arithmetics;
 
 public class Settings {
@@ -144,45 +146,115 @@ public class Settings {
 		NotifyListeners(new SettingsEvent.FileBrowserRootDirChangedEvent());
 	}
 
-	String GetSyntaxForFileExtension(String fileExtension) {
-		switch (fileExtension) {
+	String GetSyntaxForFilename(String filename) {
+		switch (filename.toLowerCase()) {
+			case "makefile":
+				return SyntaxConstants.SYNTAX_STYLE_MAKEFILE;
+			case "dockerfile":
+				return SyntaxConstants.SYNTAX_STYLE_DOCKERFILE;
+			case "hosts":
+				return SyntaxConstants.SYNTAX_STYLE_HOSTS;
+			case "sconstruct":
+			case "sconscript":
+				return SyntaxConstants.SYNTAX_STYLE_PYTHON;
+			default:
+				break;
+		}
+
+		String fileExtension = FilenameUtils.getExtension(filename);
+		switch (fileExtension.toLowerCase()) {
+			case "asm":
+				return SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86;
 			case "bat":
-				return "text/bat";
+				return SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH;
+			case "c":
+				return SyntaxConstants.SYNTAX_STYLE_C;
 			case "cpp":
 			case "c++":
 			case "cc":
 			case "h":
 			case "hpp":
-				return "text/cpp";
+				return SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS;
+			case "clj":
+				return SyntaxConstants.SYNTAX_STYLE_CLOJURE;
 			case "cs":
-				return "text/cs";
+				return SyntaxConstants.SYNTAX_STYLE_CSHARP;
 			case "css":
-				return "text/css";
+				return SyntaxConstants.SYNTAX_STYLE_CSS;
+			case "d":
+				return SyntaxConstants.SYNTAX_STYLE_D;
+			case "dtd":
+				return SyntaxConstants.SYNTAX_STYLE_DTD;
+			case "dart":
+				return SyntaxConstants.SYNTAX_STYLE_DART;
+			case "f":
+			case "for":
+			case "f90":
+			case "f95":
+				return SyntaxConstants.SYNTAX_STYLE_FORTRAN;
+			case "groovy":
+				return SyntaxConstants.SYNTAX_STYLE_GROOVY;
+			case "htaccess":
+				return SyntaxConstants.SYNTAX_STYLE_HTACCESS;
+			case "html":
+			case "htm":
+				return SyntaxConstants.SYNTAX_STYLE_HTML;
+			case "ini":
+				return SyntaxConstants.SYNTAX_STYLE_INI;
+			case "java":
+				return SyntaxConstants.SYNTAX_STYLE_JAVA;
+			case "js":
+				return SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT;
 			case "json":
-				return "text/json";
+				return SyntaxConstants.SYNTAX_STYLE_JSON;
+			case "jshintrc":
+				return SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS;
+			case "jsp":
+				return SyntaxConstants.SYNTAX_STYLE_JSP;
 			case "tex":
 			case "latex":
-				return "text/latex";
+				return SyntaxConstants.SYNTAX_STYLE_LATEX;
+			case "less":
+				return SyntaxConstants.SYNTAX_STYLE_LESS;
+			case "lisp":
+				return SyntaxConstants.SYNTAX_STYLE_LISP;
+			case "lua":
+				return SyntaxConstants.SYNTAX_STYLE_LUA;
+			case "mxml":
+				return SyntaxConstants.SYNTAX_STYLE_MXML;
+			case "nsi":
+			case "nsh":
+				return SyntaxConstants.SYNTAX_STYLE_NSIS;
+			case "pas":
+				return SyntaxConstants.SYNTAX_STYLE_DELPHI;
 			case "perl":
-				return "text/perl";
+				return SyntaxConstants.SYNTAX_STYLE_PERL;
 			case "php":
-				return "text/php";
+				return SyntaxConstants.SYNTAX_STYLE_PHP;
+			case "properties":
+				return SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE;
 			case "py":
-				return "text/python";
+				return SyntaxConstants.SYNTAX_STYLE_PYTHON;
 			case "rb":
-				return "text/ruby";
+				return SyntaxConstants.SYNTAX_STYLE_RUBY;
+			case "scala":
+				return SyntaxConstants.SYNTAX_STYLE_SCALA;
 			case "sh":
-				return "text/unix";
+				return SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL;
 			case "sql":
-				return "text/sql";
+				return SyntaxConstants.SYNTAX_STYLE_SQL;
 			case "tcl":
-				return "text/tcl";
+				return SyntaxConstants.SYNTAX_STYLE_TCL;
+			case "ts":
+				return SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT;
 			case "vb":
-				return "text/vb";
+				return SyntaxConstants.SYNTAX_STYLE_VISUAL_BASIC;
 			case "xml":
-				return "text/xml";
+				return SyntaxConstants.SYNTAX_STYLE_XML;
+			case "yml":
+				return SyntaxConstants.SYNTAX_STYLE_YAML;
 			default:
-				return "text/plain";
+				return SyntaxConstants.SYNTAX_STYLE_NONE;
 		}
 	}
 
