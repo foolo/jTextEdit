@@ -17,6 +17,9 @@ public class RecentFilesCollection {
 
 	public RecentFilesCollection(byte[] b) {
 		m_recentFiles.clear();
+		if (b == null) {
+			return;
+		}
 		ByteArrayInputStream bais = new ByteArrayInputStream(b);
 		ObjectInputStream ois;
 		try {

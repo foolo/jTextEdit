@@ -61,7 +61,7 @@ public class Settings {
 	}
 
 	RecentFilesCollection GetRecentFilesCollection() {
-		byte[] b = prefs.getByteArray(RECENT_FILES, new byte[]{});
+		byte[] b = prefs.getByteArray(RECENT_FILES, null);
 		return new RecentFilesCollection(b);
 	}
 

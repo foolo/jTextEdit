@@ -117,7 +117,6 @@ public final class MainForm extends javax.swing.JFrame {
 
 		@Override
 		void ShowFileBrowserChanged() {
-			UpdateOpenRecentMenu();
 			fileBrowser1.setVisible(settings.GetShowFileBrowser());
 		}
 
