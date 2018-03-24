@@ -122,7 +122,7 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	void UpdateSyntaxEditingStyle() {
-		String syntaxMime = settings.GetSyntaxForFilename(textEditorPane1.getFileName());
+		String syntaxMime = SyntaxDetector.detectSyntax(textEditorPane1);
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
 	}
 
