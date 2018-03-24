@@ -184,7 +184,7 @@ public final class MainForm extends javax.swing.JFrame {
 		fileBrowser1.addFileBrowserListener(new FileBrowser.FileBrowserListener() {
 			@Override
 			public void fileSelected(File file) {
-				Open(file);
+				tabHandler.DoOpen(file);
 			}
 
 			@Override
@@ -195,7 +195,12 @@ public final class MainForm extends javax.swing.JFrame {
 	}
 
 	void Open(File f) {
-		tabHandler.DoOpen(f);
+		if (f.isDirectory()) {
+			settings.SetFileBrowserDirectory(f);
+		}
+		else {
+			tabHandler.DoOpen(f);
+		}
 	}
 
 	void UpdateOpenRecentMenu() {
