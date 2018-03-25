@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -192,6 +193,7 @@ public final class MainForm extends javax.swing.JFrame {
 				settings.SetFileBrowserDirectory(file);
 			}
 		});
+		populateSyntaxSelectionMenu();
 	}
 
 	void Open(File f) {
@@ -231,6 +233,20 @@ public final class MainForm extends javax.swing.JFrame {
 		}
 		jMenuOpenRecent.addSeparator();
 		jMenuOpenRecent.add(jMenuItemClearRecent);
+	}
+
+	void populateSyntaxSelectionMenu() {
+		for (String s : SyntaxDetector.getAvailableSyntaxes()) {
+			final JMenuItem item = new JMenuItem(s);
+			jMenuSyntax.add(item);
+			item.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println(".actionPerformed() " + s);
+					tabHandler.CurrentDocumentView().SetSyntaxEditingStyle(s);
+				}
+			});
+		}
 	}
 
 	public @Override
@@ -334,6 +350,7 @@ public final class MainForm extends javax.swing.JFrame {
         jMenuDocument = new javax.swing.JMenu();
         jMenuItemReloadWithEncoding = new javax.swing.JMenuItem();
         jMenuItemChangeEncoding = new javax.swing.JMenuItem();
+        jMenuSyntax = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -504,6 +521,9 @@ public final class MainForm extends javax.swing.JFrame {
         });
         jMenuDocument.add(jMenuItemChangeEncoding);
 
+        jMenuSyntax.setText("Syntax");
+        jMenuDocument.add(jMenuSyntax);
+
         jMenuBar1.add(jMenuDocument);
 
         setJMenuBar(jMenuBar1);
@@ -647,6 +667,7 @@ public final class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemSaveAs;
     private javax.swing.JMenuItem jMenuItemScriptOperations;
     private javax.swing.JMenu jMenuOpenRecent;
+    private javax.swing.JMenu jMenuSyntax;
     private javax.swing.JMenu jMenuView;
     private texteditor.SearchPanel searchPanel1;
     private texteditor.StatusBar statusBar1;

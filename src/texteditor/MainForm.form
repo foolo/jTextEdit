@@ -175,6 +175,11 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemChangeEncodingActionPerformed"/>
               </Events>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="jMenuSyntax">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Syntax"/>
+              </Properties>
+            </Menu>
           </SubComponents>
         </Menu>
       </SubComponents>

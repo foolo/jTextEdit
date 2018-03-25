@@ -1,5 +1,6 @@
 package texteditor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -168,5 +169,57 @@ public class SyntaxDetector {
 			default:
 				return null;
 		}
+	}
+
+	static ArrayList<String> getAvailableSyntaxes() {
+		ArrayList<String> result = new ArrayList<>();
+		result.add(SyntaxConstants.SYNTAX_STYLE_NONE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_ACTIONSCRIPT);
+		result.add(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86);
+		result.add(SyntaxConstants.SYNTAX_STYLE_BBCODE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_C);
+		result.add(SyntaxConstants.SYNTAX_STYLE_CLOJURE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_CSHARP);
+		result.add(SyntaxConstants.SYNTAX_STYLE_CSS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_D);
+		result.add(SyntaxConstants.SYNTAX_STYLE_DOCKERFILE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_DART);
+		result.add(SyntaxConstants.SYNTAX_STYLE_DELPHI);
+		result.add(SyntaxConstants.SYNTAX_STYLE_DTD);
+		result.add(SyntaxConstants.SYNTAX_STYLE_FORTRAN);
+		result.add(SyntaxConstants.SYNTAX_STYLE_GROOVY);
+		result.add(SyntaxConstants.SYNTAX_STYLE_HOSTS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_HTACCESS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_HTML);
+		result.add(SyntaxConstants.SYNTAX_STYLE_INI);
+		result.add(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		result.add(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+		result.add(SyntaxConstants.SYNTAX_STYLE_JSON);
+		result.add(SyntaxConstants.SYNTAX_STYLE_JSON_WITH_COMMENTS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_JSP);
+		result.add(SyntaxConstants.SYNTAX_STYLE_LATEX);
+		result.add(SyntaxConstants.SYNTAX_STYLE_LESS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_LISP);
+		result.add(SyntaxConstants.SYNTAX_STYLE_LUA);
+		result.add(SyntaxConstants.SYNTAX_STYLE_MAKEFILE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_MXML);
+		result.add(SyntaxConstants.SYNTAX_STYLE_NSIS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_PERL);
+		result.add(SyntaxConstants.SYNTAX_STYLE_PHP);
+		result.add(SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE);
+		result.add(SyntaxConstants.SYNTAX_STYLE_PYTHON);
+		result.add(SyntaxConstants.SYNTAX_STYLE_RUBY);
+		result.add(SyntaxConstants.SYNTAX_STYLE_SAS);
+		result.add(SyntaxConstants.SYNTAX_STYLE_SCALA);
+		result.add(SyntaxConstants.SYNTAX_STYLE_SQL);
+		result.add(SyntaxConstants.SYNTAX_STYLE_TCL);
+		result.add(SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT);
+		result.add(SyntaxConstants.SYNTAX_STYLE_UNIX_SHELL);
+		result.add(SyntaxConstants.SYNTAX_STYLE_VISUAL_BASIC);
+		result.add(SyntaxConstants.SYNTAX_STYLE_WINDOWS_BATCH);
+		result.add(SyntaxConstants.SYNTAX_STYLE_XML);
+		result.add(SyntaxConstants.SYNTAX_STYLE_YAML);
+		return result;
 	}
 }

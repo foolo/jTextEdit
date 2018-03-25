@@ -45,6 +45,7 @@ public class DocumentView extends javax.swing.JPanel {
 	TabHandler tabHandler;
 	Settings settings;
 	PropertyDispatcher propertyDispatcher;
+	boolean manuallySelectedSyntax = false;
 
 	public DocumentView(TabHandler th, Settings s, PropertyDispatcher pd) {
 		initTextEditorPane();
@@ -122,8 +123,15 @@ public class DocumentView extends javax.swing.JPanel {
 	}
 
 	void UpdateSyntaxEditingStyle() {
-		String syntaxMime = SyntaxDetector.detectSyntax(textEditorPane1);
+		if (!manuallySelectedSyntax) {
+			String syntaxMime = SyntaxDetector.detectSyntax(textEditorPane1);
+			textEditorPane1.setSyntaxEditingStyle(syntaxMime);
+		}
+	}
+
+	void SetSyntaxEditingStyle(String syntaxMime) {
 		textEditorPane1.setSyntaxEditingStyle(syntaxMime);
+		manuallySelectedSyntax = true;
 	}
 
 	public boolean CanBeReloaded() {
