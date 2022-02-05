@@ -213,12 +213,12 @@ public final class MainForm extends javax.swing.JFrame {
 		MainForm mainForm = this;
 		while (li.hasPrevious()) {
 			String filename = (String) li.previous();
-			final JMenuItem item = new JMenuItem(filename);
+			File f = new File(filename);
+			final JMenuItem item = new JMenuItem(f.getName());
 			jMenuOpenRecent.add(item);
 			item.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					File f = new File(item.getText());
 					if (!f.exists()) {
 						RecentFilesCollection recentFiles = settings.GetRecentFilesCollection();
 						recentFiles.removeFile(f);
@@ -226,7 +226,7 @@ public final class MainForm extends javax.swing.JFrame {
 						JOptionPane.showMessageDialog(mainForm, "Could not find \"" + f + "\"");
 					}
 					else {
-						tabHandler.DoOpen(new File(item.getText()));
+						tabHandler.DoOpen(f);
 					}
 				}
 			});
