@@ -5,8 +5,6 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
-import org.apache.commons.io.FilenameUtils;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import util.Arithmetics;
 
 public class Settings {
@@ -38,7 +36,6 @@ public class Settings {
 	private static final String OPEN_DIRECTORY = "open_directory";
 	private static final String FILE_BROWSER_DIRECTORY = "file_browser_directory";
 	private static final String RECENT_FILES = "recent_files";
-	private static final String LOOK_AND_FEEL = "LOOK_AND_FEEL";
 
 	void SetRecentFilesCollection(RecentFilesCollection recentFiles) {
 		prefs.putByteArray(RECENT_FILES, recentFiles.toByteArray());
@@ -144,13 +141,5 @@ public class Settings {
 	void SetFileBrowserDirectory(File fileBrowserDirectory) {
 		prefs.put(FILE_BROWSER_DIRECTORY, fileBrowserDirectory.toString());
 		NotifyListeners(new SettingsEvent.FileBrowserRootDirChangedEvent());
-	}
-
-	String GetLookAndFeel() {
-		return prefs.get(LOOK_AND_FEEL, null);
-	}
-
-	void SetLookAndFeel(String lookAndFeel) {
-		prefs.put(LOOK_AND_FEEL, lookAndFeel);
 	}
 }

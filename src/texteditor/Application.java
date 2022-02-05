@@ -3,16 +3,20 @@ package texteditor;
 import it.sauronsoftware.junique.AlreadyLockedException;
 import it.sauronsoftware.junique.JUnique;
 import it.sauronsoftware.junique.MessageHandler;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import org.apache.commons.codec.binary.Base64;
 
 public class Application {
@@ -21,21 +25,26 @@ public class Application {
 
 	public static final Logger logger = Logger.getLogger(MainForm.class.getName());
 
-	static void SetLookAndFeel(Settings settings) {
-		try {
-			String lookAndFeel = settings.GetLookAndFeel();
-			if (lookAndFeel != null) {
-				UIManager.setLookAndFeel(lookAndFeel);
-			}
-			else if (System.getProperty("os.name").contains("Linux")) {
-				UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-			}
-			else {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	public static void setUIFont() {
+		FontUIResource f = new FontUIResource(Font.SANS_SERIF, Font.PLAIN, 11);
+		Enumeration keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource) {
+				UIManager.put(key, f);
 			}
 		}
-		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-			Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+	}
+
+	static void SetLookAndFeel(Settings settings) {
+		try {
+			UIManager.setLookAndFeel(new MetalLookAndFeel());
+			UIManager.put("swing.boldMetal", Boolean.FALSE);
+			setUIFont();
+		}
+		catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
